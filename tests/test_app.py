@@ -102,7 +102,7 @@ def test_get_work_entries(client):
 def test_unauthorized_access(client):
     """Test accessing protected endpoints without token."""
     response = client.get('/auth/profile')
-    assert response.status_code == 422  # JWT missing
+    assert response.status_code == 401  # JWT missing
 
 def test_invalid_work_entry_data(client):
     """Test creating work entry with invalid data."""
