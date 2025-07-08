@@ -3,8 +3,9 @@
 Simple test script to verify the Flask API endpoints
 """
 
-import requests
 from datetime import date
+
+import requests
 
 BASE_URL = "http://localhost:5000"
 
@@ -58,9 +59,15 @@ def test_work_entries_endpoints(token):
 
     # Test creating work entry
     print("1. Testing work entry creation...")
-    work_entry_data = {"date": date.today().isoformat(), "hours": 8.5, "description": "Testing the API endpoints"}
+    work_entry_data = {
+        "date": date.today().isoformat(),
+        "hours": 8.5,
+        "description": "Testing the API endpoints",
+    }
 
-    response = requests.post(f"{BASE_URL}/work-entries/", json=work_entry_data, headers=headers)
+    response = requests.post(
+        f"{BASE_URL}/work-entries/", json=work_entry_data, headers=headers
+    )
     print(f"   Status: {response.status_code}")
     if response.status_code == 201:
         print("   ✓ Work entry creation successful")
@@ -91,7 +98,9 @@ def test_work_entries_endpoints(token):
     # Test updating work entry
     print("4. Testing work entry update...")
     update_data = {"description": "Updated description for testing"}
-    response = requests.put(f"{BASE_URL}/work-entries/{entry_id}", json=update_data, headers=headers)
+    response = requests.put(
+        f"{BASE_URL}/work-entries/{entry_id}", json=update_data, headers=headers
+    )
     print(f"   Status: {response.status_code}")
     if response.status_code == 200:
         print("   ✓ Work entry update successful")
