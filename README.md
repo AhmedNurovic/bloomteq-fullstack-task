@@ -148,11 +148,17 @@ The application uses Flask's application factory pattern for better testing and 
 
 ## Testing
 
-To test the API endpoints, you can use tools like:
-- Postman
-- curl
-- Insomnia
-- Any HTTP client
+### Unit Tests
+Run the test suite:
+```bash
+python -m pytest tests/ -v
+```
+
+### API Testing Script
+Run the API testing script (requires the Flask app to be running):
+```bash
+python api_script.py
+```
 
 Example curl commands:
 
