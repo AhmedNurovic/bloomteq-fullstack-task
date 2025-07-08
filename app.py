@@ -3,8 +3,7 @@ from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
 from flask import Blueprint, Flask, jsonify, request
-from flask_jwt_extended import (JWTManager, create_access_token,
-                                get_jwt_identity, jwt_required)
+from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -56,20 +55,8 @@ class WorkEntry(db.Model):
         }
 
 
-def create_app(test_config=None):
-    app = Flask(__name__)
-    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev-secret-key")
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "sqlite:///instance/work_tracker.db")
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "jwt-secret-key")
-
-    if test_config:
-        app.config.update(test_config)
-
-    db.init_app(app)
-    jwt.init_app(app)
-
-    # Auth Blueprint
+def _create_auth_blueprint():
+    """Create and configure the auth blueprint."""
     auth_bp = Blueprint("auth", __name__)
 
     @auth_bp.route("/register", methods=["POST"])
@@ -117,7 +104,11 @@ def create_app(test_config=None):
             return jsonify({"error": "User not found"}), 404
         return jsonify({"user": user.to_dict()}), 200
 
-    # Work Entries Blueprint
+    return auth_bp
+
+
+def _create_work_entries_blueprint():
+    """Create and configure the work entries blueprint."""
     work_entries_bp = Blueprint("work_entries", __name__)
 
     @work_entries_bp.route("/", methods=["GET"])
@@ -220,9 +211,25 @@ def create_app(test_config=None):
             db.session.rollback()
             return jsonify({"error": "Failed to delete work entry"}), 500
 
+    return work_entries_bp
+
+
+def create_app(test_config=None):
+    app = Flask(__name__)
+    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev-secret-key")
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "sqlite:///instance/work_tracker.db")
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "jwt-secret-key")
+
+    if test_config:
+        app.config.update(test_config)
+
+    db.init_app(app)
+    jwt.init_app(app)
+
     # Register blueprints
-    app.register_blueprint(auth_bp, url_prefix="/auth")
-    app.register_blueprint(work_entries_bp, url_prefix="/work-entries")
+    app.register_blueprint(_create_auth_blueprint(), url_prefix="/auth")
+    app.register_blueprint(_create_work_entries_blueprint(), url_prefix="/work-entries")
 
     # Create database tables
     with app.app_context():
