@@ -3,7 +3,8 @@ from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
 from flask import Blueprint, Flask, jsonify, request
-from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required
+from flask_jwt_extended import (JWTManager, create_access_token,
+                                get_jwt_identity, jwt_required)
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -55,12 +56,15 @@ class WorkEntry(db.Model):
         }
 
 
-def create_app():
+def create_app(test_config=None):
     app = Flask(__name__)
     app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev-secret-key")
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "sqlite:///instance/work_tracker.db")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "jwt-secret-key")
+
+    if test_config:
+        app.config.update(test_config)
 
     db.init_app(app)
     jwt.init_app(app)

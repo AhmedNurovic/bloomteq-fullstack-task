@@ -8,10 +8,11 @@ from app import create_app, db
 @pytest.fixture
 def app():
     """Create and configure a new app instance for each test."""
-    app = create_app()
-    app.config["TESTING"] = True
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
-
+    test_config = {
+        "TESTING": True,
+        "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",
+    }
+    app = create_app(test_config)
     with app.app_context():
         db.drop_all()
         db.create_all()
