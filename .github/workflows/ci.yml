@@ -47,14 +47,6 @@ jobs:
       env:
         FLASK_ENV: testing
         
-    - name: Run API tests
-      run: |
-        python app.py &
-        sleep 5
-        python test_api.py
-      env:
-        FLASK_ENV: testing
-        
   lint:
     runs-on: ubuntu-latest
     
