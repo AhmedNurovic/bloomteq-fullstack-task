@@ -3,8 +3,12 @@ from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
 from flask import Blueprint, Flask, jsonify, request
-from flask_jwt_extended import (JWTManager, create_access_token,
-                                get_jwt_identity, jwt_required)
+from flask_jwt_extended import (
+    JWTManager,
+    create_access_token,
+    get_jwt_identity,
+    jwt_required,
+)
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash, generate_password_hash
 
