@@ -126,46 +126,268 @@ def test_login_short_password(client):
 
 def test_create_work_entry(client):
     """Test creating a work entry."""
-    # Register and login to get token
-    register_response = client.post(
-        "/auth/register", json={"email": "test@example.com", "password": "password123"}
+    # Register and login first
+    client.post(
+        "/auth/register", json={"email": "test5@example.com", "password": "password123"}
     )
-    token = json.loads(register_response.data)["access_token"]
+    login_response = client.post(
+        "/auth/login", json={"email": "test5@example.com", "password": "password123"}
+    )
+    token = login_response.json["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
 
-    # Create work entry
     response = client.post(
-        "/work-entries/",
-        json={"date": "2024-01-15", "hours": 8.5, "description": "Test work"},
-        headers={"Authorization": f"Bearer {token}"},
+        "/entries/",
+        json={
+            "date": "2023-01-01",
+            "hours": 8.5,
+            "description": "Test work entry",
+        },
+        headers=headers,
     )
     assert response.status_code == 201
-    data = json.loads(response.data)
-    assert data["work_entry"]["hours"] == 8.5
-    assert data["work_entry"]["description"] == "Test work"
+    data = response.json
+    assert "work_entry" in data
+    assert data["work_entry"]["description"] == "Test work entry"
 
 
-def test_get_work_entries(client):
-    """Test getting work entries."""
-    # Register and login to get token
-    register_response = client.post(
-        "/auth/register", json={"email": "test@example.com", "password": "password123"}
-    )
-    token = json.loads(register_response.data)["access_token"]
-
-    # Create a work entry
+def test_get_work_entries_with_pagination(client):
+    """Test getting work entries with pagination."""
+    # Register and login first
     client.post(
-        "/work-entries/",
-        json={"date": "2024-01-15", "hours": 8.5, "description": "Test work"},
-        headers={"Authorization": f"Bearer {token}"},
+        "/auth/register", json={"email": "test6@example.com", "password": "password123"}
+    )
+    login_response = client.post(
+        "/auth/login", json={"email": "test6@example.com", "password": "password123"}
+    )
+    token = login_response.json["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    # Create multiple entries
+    for i in range(15):
+        client.post(
+            "/entries/",
+            json={
+                "date": f"2023-01-{i+1:02d}",
+                "hours": 8.0,
+                "description": f"Work entry {i+1}",
+            },
+            headers=headers,
+        )
+
+    # Test first page (default 10 per page)
+    response = client.get("/entries/", headers=headers)
+    assert response.status_code == 200
+    data = response.json
+    assert len(data["work_entries"]) == 10
+    assert data["pagination"]["page"] == 1
+    assert data["pagination"]["per_page"] == 10
+    assert data["pagination"]["total"] == 15
+    assert data["pagination"]["total_pages"] == 2
+    assert data["pagination"]["has_next"] is True
+    assert data["pagination"]["has_prev"] is False
+
+    # Test second page
+    response = client.get("/entries/?page=2", headers=headers)
+    assert response.status_code == 200
+    data = response.json
+    assert len(data["work_entries"]) == 5
+    assert data["pagination"]["page"] == 2
+    assert data["pagination"]["has_next"] is False
+    assert data["pagination"]["has_prev"] is True
+
+    # Test custom per_page
+    response = client.get("/entries/?per_page=5", headers=headers)
+    assert response.status_code == 200
+    data = response.json
+    assert len(data["work_entries"]) == 5
+    assert data["pagination"]["per_page"] == 5
+    assert data["pagination"]["total_pages"] == 3
+
+
+def test_get_work_entries_with_date_filters(client):
+    """Test getting work entries with date filters."""
+    # Register and login first
+    client.post(
+        "/auth/register", json={"email": "test7@example.com", "password": "password123"}
+    )
+    login_response = client.post(
+        "/auth/login", json={"email": "test7@example.com", "password": "password123"}
+    )
+    token = login_response.json["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    # Create entries with different dates
+    client.post(
+        "/entries/",
+        json={
+            "date": "2023-01-01",
+            "hours": 8.0,
+            "description": "Entry 1",
+        },
+        headers=headers,
+    )
+    client.post(
+        "/entries/",
+        json={
+            "date": "2023-01-15",
+            "hours": 8.0,
+            "description": "Entry 2",
+        },
+        headers=headers,
+    )
+    client.post(
+        "/entries/",
+        json={
+            "date": "2023-02-01",
+            "hours": 8.0,
+            "description": "Entry 3",
+        },
+        headers=headers,
     )
 
-    # Get work entries
+    # Test date range filter
     response = client.get(
-        "/work-entries/", headers={"Authorization": f"Bearer {token}"}
+        "/entries/?start_date=2023-01-01&end_date=2023-01-31", headers=headers
     )
     assert response.status_code == 200
-    data = json.loads(response.data)
-    assert len(data["work_entries"]) == 1
+    data = response.json
+    assert len(data["work_entries"]) == 2
+
+
+def test_create_work_entry_invalid_date(client):
+    """Test creating work entry with invalid date format."""
+    # Register and login first
+    client.post(
+        "/auth/register", json={"email": "test8@example.com", "password": "password123"}
+    )
+    login_response = client.post(
+        "/auth/login", json={"email": "test8@example.com", "password": "password123"}
+    )
+    token = login_response.json["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    response = client.post(
+        "/entries/",
+        json={
+            "date": "invalid-date",
+            "hours": 8.0,
+            "description": "Test work entry",
+        },
+        headers=headers,
+    )
+    assert response.status_code == 400
+    assert b"Invalid date format" in response.data
+
+
+def test_create_work_entry_invalid_hours(client):
+    """Test creating work entry with invalid hours."""
+    # Register and login first
+    client.post(
+        "/auth/register", json={"email": "test9@example.com", "password": "password123"}
+    )
+    login_response = client.post(
+        "/auth/login", json={"email": "test9@example.com", "password": "password123"}
+    )
+    token = login_response.json["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    response = client.post(
+        "/entries/",
+        json={
+            "date": "2023-01-01",
+            "hours": -5,
+            "description": "Test work entry",
+        },
+        headers=headers,
+    )
+    assert response.status_code == 400
+    assert b"Hours must be greater than 0" in response.data
+
+
+def test_work_entry_ownership_check(client):
+    """Test that users can only access their own entries."""
+    # Register two users
+    client.post(
+        "/auth/register", json={"email": "user1@example.com", "password": "password123"}
+    )
+    client.post(
+        "/auth/register", json={"email": "user2@example.com", "password": "password123"}
+    )
+
+    # Login as user1
+    login_response = client.post(
+        "/auth/login", json={"email": "user1@example.com", "password": "password123"}
+    )
+    token1 = login_response.json["access_token"]
+    headers1 = {"Authorization": f"Bearer {token1}"}
+
+    # Create entry as user1
+    create_response = client.post(
+        "/entries/",
+        json={
+            "date": "2023-01-01",
+            "hours": 8.0,
+            "description": "User1's entry",
+        },
+        headers=headers1,
+    )
+    assert create_response.status_code == 201
+    entry_id = create_response.json["work_entry"]["id"]
+
+    # Login as user2
+    login_response2 = client.post(
+        "/auth/login", json={"email": "user2@example.com", "password": "password123"}
+    )
+    token2 = login_response2.json["access_token"]
+    headers2 = {"Authorization": f"Bearer {token2}"}
+
+    # Try to access user1's entry as user2
+    response = client.get(f"/entries/{entry_id}", headers=headers2)
+    assert response.status_code == 404
+
+    # Try to delete user1's entry as user2
+    response = client.delete(f"/entries/{entry_id}", headers=headers2)
+    assert response.status_code == 404
+
+    # Verify user1 can still access their entry
+    response = client.get(f"/entries/{entry_id}", headers=headers1)
+    assert response.status_code == 200
+
+
+def test_delete_work_entry(client):
+    """Test deleting a work entry."""
+    # Register and login first
+    client.post(
+        "/auth/register",
+        json={"email": "test10@example.com", "password": "password123"},
+    )
+    login_response = client.post(
+        "/auth/login", json={"email": "test10@example.com", "password": "password123"}
+    )
+    token = login_response.json["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    # Create an entry
+    create_response = client.post(
+        "/entries/",
+        json={
+            "date": "2023-01-01",
+            "hours": 8.0,
+            "description": "Test work entry",
+        },
+        headers=headers,
+    )
+    assert create_response.status_code == 201
+    entry_id = create_response.json["work_entry"]["id"]
+
+    # Delete the entry
+    response = client.delete(f"/entries/{entry_id}", headers=headers)
+    assert response.status_code == 200
+
+    # Verify it's deleted
+    response = client.get(f"/entries/{entry_id}", headers=headers)
+    assert response.status_code == 404
 
 
 def test_unauthorized_access(client):

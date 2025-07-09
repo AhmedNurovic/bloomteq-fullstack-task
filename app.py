@@ -225,9 +225,22 @@ def _apply_date_filters(query, start_date, end_date):
     return query, None
 
 
+def _apply_pagination(query, page=1, per_page=10):
+    """Apply pagination to query."""
+    try:
+        page = max(1, int(page))
+        per_page = max(1, min(100, int(per_page)))  # Limit per_page to 100
+    except (ValueError, TypeError):
+        page = 1
+        per_page = 10
+
+    offset = (page - 1) * per_page
+    return query.offset(offset).limit(per_page), page, per_page
+
+
 def _create_work_entries_blueprint():
     """Create and configure the work entries blueprint."""
-    work_entries_bp = Blueprint("work_entries", __name__)
+    work_entries_bp = Blueprint("entries", __name__)
 
     @work_entries_bp.route("/", methods=["GET"])
     @jwt_required()
@@ -235,15 +248,38 @@ def _create_work_entries_blueprint():
         current_user_id = get_jwt_identity()
         start_date = request.args.get("start_date")
         end_date = request.args.get("end_date")
+        page = request.args.get("page", 1)
+        per_page = request.args.get("per_page", 10)
 
         query = WorkEntry.query.filter_by(user_id=int(current_user_id))
         query, error = _apply_date_filters(query, start_date, end_date)
         if error:
             return jsonify({"error": error}), 400
 
-        work_entries = query.order_by(WorkEntry.date.desc()).all()
+        # Apply pagination
+        paginated_query, current_page, items_per_page = _apply_pagination(
+            query, page, per_page
+        )
+        work_entries = paginated_query.order_by(WorkEntry.date.desc()).all()
+
+        # Get total count for pagination metadata
+        total_count = query.count()
+        total_pages = (total_count + items_per_page - 1) // items_per_page
+
         return (
-            jsonify({"work_entries": [entry.to_dict() for entry in work_entries]}),
+            jsonify(
+                {
+                    "work_entries": [entry.to_dict() for entry in work_entries],
+                    "pagination": {
+                        "page": current_page,
+                        "per_page": items_per_page,
+                        "total": total_count,
+                        "total_pages": total_pages,
+                        "has_next": current_page < total_pages,
+                        "has_prev": current_page > 1,
+                    },
+                }
+            ),
             200,
         )
 
@@ -382,7 +418,7 @@ def create_app(test_config=None):
 
     # Register blueprints
     app.register_blueprint(_create_auth_blueprint(), url_prefix="/auth")
-    app.register_blueprint(_create_work_entries_blueprint(), url_prefix="/work-entries")
+    app.register_blueprint(_create_work_entries_blueprint(), url_prefix="/entries")
 
     # Create database tables
     with app.app_context():
