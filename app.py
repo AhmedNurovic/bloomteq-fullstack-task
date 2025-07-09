@@ -1,4 +1,5 @@
 import os
+import re
 from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
@@ -70,9 +71,17 @@ class WorkEntry(db.Model):
 
 # Helper functions for auth blueprint
 def _validate_auth_data(data):
-    """Validate authentication data."""
+    """Validate authentication data with email format and password length."""
     if not data or not data.get("email") or not data.get("password"):
         return False, "Email and password are required"
+    email = data["email"]
+    password = data["password"]
+    # Simple email regex
+    email_regex = r"^[\w\.-]+@[\w\.-]+\.\w+$"
+    if not re.match(email_regex, email):
+        return False, "Invalid email format"
+    if len(password) < 8:
+        return False, "Password must be at least 8 characters long"
     return True, None
 
 
