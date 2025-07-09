@@ -256,11 +256,12 @@ def _create_work_entries_blueprint():
         if error:
             return jsonify({"error": error}), 400
 
-        # Apply pagination
+        # Fix: order_by before pagination
+        query = query.order_by(WorkEntry.date.desc())
         paginated_query, current_page, items_per_page = _apply_pagination(
             query, page, per_page
         )
-        work_entries = paginated_query.order_by(WorkEntry.date.desc()).all()
+        work_entries = paginated_query.all()
 
         # Get total count for pagination metadata
         total_count = query.count()

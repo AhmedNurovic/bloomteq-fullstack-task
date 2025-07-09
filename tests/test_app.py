@@ -397,17 +397,40 @@ def test_unauthorized_access(client):
 
 
 def test_invalid_work_entry_data(client):
-    """Test creating work entry with invalid data."""
-    # Register and login to get token
-    register_response = client.post(
-        "/auth/register", json={"email": "test@example.com", "password": "password123"}
+    """Test creating work entry with missing fields returns 400."""
+    client.post(
+        "/auth/register",
+        json={"email": "test11@example.com", "password": "password123"},
     )
-    token = json.loads(register_response.data)["access_token"]
+    login_response = client.post(
+        "/auth/login", json={"email": "test11@example.com", "password": "password123"}
+    )
+    token = login_response.json["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
 
-    # Try to create work entry without required fields
+    # Missing 'hours'
     response = client.post(
-        "/work-entries/",
-        json={"date": "2024-01-15"},  # Missing hours and description
-        headers={"Authorization": f"Bearer {token}"},
+        "/entries/",
+        json={"date": "2023-01-01", "description": "Missing hours"},
+        headers=headers,
     )
     assert response.status_code == 400
+    assert b"hours is required" in response.data
+
+    # Missing 'date'
+    response = client.post(
+        "/entries/",
+        json={"hours": 8, "description": "Missing date"},
+        headers=headers,
+    )
+    assert response.status_code == 400
+    assert b"date is required" in response.data
+
+    # Missing 'description'
+    response = client.post(
+        "/entries/",
+        json={"date": "2023-01-01", "hours": 8},
+        headers=headers,
+    )
+    assert response.status_code == 400
+    assert b"description is required" in response.data
