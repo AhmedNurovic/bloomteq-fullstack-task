@@ -67,3 +67,28 @@ export default tseslint.config([
   },
 ])
 ```
+
+## Deployment to GitHub Pages
+
+This project is configured for deployment to GitHub Pages using the `gh-pages` package.
+
+### Steps to Deploy
+
+1. Make sure your `homepage` in `package.json` is set to:
+   ```json
+   "homepage": "https://AhmedNurovic.github.io/bloomteq-fullstack-task/"
+   ```
+2. The Vite config (`vite.config.ts`) sets the base path for GitHub Pages:
+   ```js
+   base: '/bloomteq-fullstack-task/',
+   ```
+3. To deploy, run:
+   ```sh
+   npm run deploy
+   ```
+   This will build the app and publish the `dist` folder to the `gh-pages` branch.
+
+4. In your GitHub repository settings, set GitHub Pages to deploy from the `gh-pages` branch (root).
+
+After a few minutes, your site will be live at:
+https://AhmedNurovic.github.io/bloomteq-fullstack-task/
