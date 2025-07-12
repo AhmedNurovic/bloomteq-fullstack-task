@@ -104,7 +104,7 @@ const Landing: React.FC = () => {
           justifyContent: { xs: 'flex-start', md: 'center' },
           bgcolor: 'background.default',
           minHeight: { xs: 260, md: '100vh' },
-          pt: { xs: 2, md: 0 },
+          pt: { xs: 6, md: 0 },
           pb: { xs: 3, md: 0 },
         }}
       >
