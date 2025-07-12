@@ -140,7 +140,7 @@ const material3Typography = {
     fontWeight: 500,
     lineHeight: 1.75,
     letterSpacing: '0.1px',
-    textTransform: 'none',
+    textTransform: 'none' as const,
   },
   caption: {
     fontSize: '0.75rem',
@@ -153,7 +153,7 @@ const material3Typography = {
     fontWeight: 500,
     lineHeight: 2.66,
     letterSpacing: '1.5px',
-    textTransform: 'uppercase',
+    textTransform: 'uppercase' as const,
   },
 };
 
@@ -168,7 +168,7 @@ const material3Components = {
     styleOverrides: {
       root: {
         borderRadius: 20, // Material 3 button radius
-        textTransform: 'none',
+        textTransform: 'none' as const,
         fontWeight: 500,
         padding: '10px 24px',
         minHeight: 40,

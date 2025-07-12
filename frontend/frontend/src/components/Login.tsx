@@ -13,10 +13,7 @@ import {
   useTheme,
 } from '@mui/material';
 import {
-  Email as EmailIcon,
-  Lock as LockIcon,
   Login as LoginIcon,
-  Schedule as ScheduleIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import OrangeDots from '../assets/orange-dots.svg';
@@ -31,7 +28,6 @@ const Login: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const theme = useTheme();
-  const isMobile = theme.breakpoints.down('md');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

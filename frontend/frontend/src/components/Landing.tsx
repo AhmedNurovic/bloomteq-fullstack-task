@@ -9,9 +9,7 @@ import {
   useTheme,
   useMediaQuery,
 } from '@mui/material';
-import UserCircle from '../assets/UserCircle.svg';
 import OrangeDots from '../assets/orange-dots.svg';
-import BlackArrow from '../assets/black-arrow.svg';
 
 const Landing: React.FC = () => {
   const navigate = useNavigate();
