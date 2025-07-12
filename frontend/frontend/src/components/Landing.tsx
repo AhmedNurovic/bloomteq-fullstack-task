@@ -29,8 +29,8 @@ const Landing: React.FC = () => {
           alignItems: 'center',
           justifyContent: 'center',
           position: 'relative',
-          minHeight: { xs: 260, md: '100vh' },
-          py: 0,
+          minHeight: { xs: 180, md: '100vh' },
+          py: { xs: 2, md: 0 },
           overflow: 'hidden',
         }}
       >
@@ -44,6 +44,7 @@ const Landing: React.FC = () => {
           justifyContent: 'center',
           flex: 1,
           zIndex: 2,
+          px: { xs: 2, md: 0 },
         }}>
           <h1 style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 700, fontSize: 36, color: 'white', margin: 0, letterSpacing: 2, textAlign: 'center' }}>LOGO</h1>
           <Typography
@@ -57,6 +58,7 @@ const Landing: React.FC = () => {
               mt: 2,
               textAlign: 'center',
               maxWidth: 400,
+              mb: { xs: 1, md: 0 },
             }}
           >
             Time Track Management <br /> Web App
@@ -65,14 +67,15 @@ const Landing: React.FC = () => {
             sx={{
               fontFamily: 'Poppins, sans-serif',
               fontWeight: 500,
-              fontSize: { xs: 14, md: 16 },
-              lineHeight: { xs: '20px', md: '22px' },
+              fontSize: { xs: 15, md: 16 },
+              lineHeight: { xs: '22px', md: '22px' },
               letterSpacing: 0,
               color: 'white',
               opacity: 0.95,
               mt: 1,
               textAlign: 'center',
               maxWidth: 400,
+              mb: { xs: 1, md: 0 },
             }}
           >
             Easily track and manage your working hours with our intuitive web app. Perfect for teams and individuals looking to stay organized, monitor productivity, and simplify time logging.
@@ -100,28 +103,32 @@ const Landing: React.FC = () => {
           alignItems: 'center',
           justifyContent: { xs: 'flex-start', md: 'center' },
           bgcolor: 'background.default',
-          minHeight: { xs: 320, md: '100vh' },
+          minHeight: { xs: 260, md: '100vh' },
           pt: { xs: 2, md: 0 },
+          pb: { xs: 3, md: 0 },
         }}
       >
         <Container maxWidth="sm" sx={{ px: { xs: 1, sm: 2, md: 0 } }}>
-          <Box sx={{ textAlign: 'center', mb: 4 }}>
+          <Box sx={{ textAlign: 'center', mb: 3 }}>
             <Typography variant="h4" sx={{ fontWeight: 700, mb: 1, color: 'text.primary', fontSize: { xs: 20, md: 28 } }}>
               Join Us!
             </Typography>
-            <Typography variant="body1" sx={{ color: 'text.secondary', mb: 4, fontSize: { xs: 14, md: 16 } }}>
+            <Typography variant="body1" sx={{ color: 'text.secondary', mb: 3, fontSize: { xs: 14, md: 16 } }}>
               To begin this journey, register to create an account or sign in if you have an account.
             </Typography>
           </Box>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2.5, md: 3 }, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2, md: 3 }, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
             {/* Register Card */}
             <Card
               sx={{
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
                 width: '100%',
-                minHeight: { xs: 72, md: 90 },
-                mb: { xs: 2, md: 0 },
+                minHeight: { xs: 64, md: 90 },
+                mb: { xs: 1, md: 0 },
+                borderRadius: { xs: 3, md: 3 },
+                px: { xs: 1, md: 0 },
+                py: { xs: 0.5, md: 0 },
                 boxShadow: '0 20px 12px 0 rgba(9, 109, 217, 0.06)',
                 '&:hover': {
                   border: '1.5px solid #096DD9',
@@ -131,7 +138,7 @@ const Landing: React.FC = () => {
               }}
               onClick={() => navigate('/register')}
             >
-              <CardContent sx={{ p: { xs: 2, md: 3 } }}>
+              <CardContent sx={{ p: { xs: 1.5, md: 3 } }}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   {/* No logo here */}
                   <Box sx={{ flex: 1 }}>
@@ -150,7 +157,7 @@ const Landing: React.FC = () => {
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
                 width: '100%',
-                minHeight: { xs: 72, md: 90 },
+                minHeight: { xs: 64, md: 90 },
                 color: '#096DD9',
                 bgcolor: 'white',
                 boxShadow: '0 20px 12px 0 rgba(9, 109, 217, 0.06)',
@@ -159,10 +166,13 @@ const Landing: React.FC = () => {
                   transform: 'translateY(-4px)',
                   boxShadow: theme.shadows[8],
                 },
+                borderRadius: { xs: 3, md: 3 },
+                px: { xs: 1, md: 0 },
+                py: { xs: 0.5, md: 0 },
               }}
               onClick={() => navigate('/login')}
             >
-              <CardContent sx={{ p: { xs: 2, md: 3 } }}>
+              <CardContent sx={{ p: { xs: 1.5, md: 3 } }}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   {/* No logo here */}
                   <Box sx={{ flex: 1 }}>
