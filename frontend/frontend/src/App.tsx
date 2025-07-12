@@ -15,7 +15,7 @@ function App() {
       <CssBaseline />
       <div className="min-h-screen">
         <AuthProvider>
-          <Router>
+          <Router basename="/bloomteq-fullstack-task">
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/login" element={<Login />} />
