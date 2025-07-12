@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import OrangeDots from '../assets/orange-dots.svg';
 import { usePageTitle } from '../hooks/usePageTitle';
+import LeftSidePanel from './LeftSidePanel';
 
 const Landing: React.FC = () => {
   const navigate = useNavigate();
@@ -20,94 +21,90 @@ const Landing: React.FC = () => {
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: isMobile ? 'column' : 'row', bgcolor: 'background.default' }}>
-      {/* Left column: logo, dots, text block, corner shape, arrow */}
-      {/* Top blue section for mobile, left for desktop */}
-      <Box
-        sx={{
-          width: '100%',
-          background: '#096DD9',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          position: 'relative',
-          minHeight: { xs: 180, md: '100vh' },
-          py: { xs: 2, md: 0 },
-          overflow: 'hidden',
-        }}
-      >
-        {/* Centered content (LOGO and intro text) */}
-        <Box sx={{
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flex: 1,
-          zIndex: 2,
-          px: { xs: 2, md: 0 },
-        }}>
-          <h1 style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 700, fontSize: 36, color: 'white', margin: 0, letterSpacing: 2, textAlign: 'center' }}>LOGO</h1>
-          <Typography
-            sx={{
-              fontFamily: 'Poppins, sans-serif',
-              fontWeight: 700,
-              fontSize: { xs: 22, md: 30 },
-              lineHeight: { xs: '32px', md: '40px' },
-              letterSpacing: 0,
-              color: 'white',
-              mt: 2,
-              textAlign: 'center',
-              maxWidth: 400,
-              mb: { xs: 1, md: 0 },
-            }}
-          >
-            Time Track Management <br /> Web App
-          </Typography>
-          <Typography
-            sx={{
-              fontFamily: 'Poppins, sans-serif',
-              fontWeight: 500,
-              fontSize: { xs: 15, md: 16 },
-              lineHeight: { xs: '22px', md: '22px' },
-              letterSpacing: 0,
-              color: 'white',
-              opacity: 0.95,
-              mt: 1,
-              textAlign: 'center',
-              maxWidth: 400,
-              mb: { xs: 1, md: 0 },
-            }}
-          >
-            Easily track and manage your working hours with our intuitive web app. Perfect for teams and individuals looking to stay organized, monitor productivity, and simplify time logging.
-          </Typography>
+      {/* Mobile: Blue section at top - 50% height */}
+      {isMobile && (
+        <Box
+          sx={{
+            width: '100%',
+            background: '#096DD9',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'relative',
+            height: '50vh',
+            py: 2,
+            overflow: 'hidden',
+          }}
+        >
+          {/* Centered content (LOGO and intro text) */}
+          <Box sx={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flex: 1,
+            zIndex: 2,
+            px: 2,
+          }}>
+            <h1 style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 700, fontSize: 36, color: 'white', margin: 0, letterSpacing: 2, textAlign: 'center' }}>LOGO</h1>
+            <Typography
+              sx={{
+                fontFamily: 'Poppins, sans-serif',
+                fontWeight: 700,
+                fontSize: 22,
+                lineHeight: '32px',
+                letterSpacing: 0,
+                color: 'white',
+                mt: 2,
+                textAlign: 'center',
+                maxWidth: 400,
+                mb: 1,
+              }}
+            >
+              Time Track Management <br /> Web App
+            </Typography>
+            <Typography
+              sx={{
+                fontFamily: 'Poppins, sans-serif',
+                fontWeight: 500,
+                fontSize: 15,
+                lineHeight: '22px',
+                letterSpacing: 0,
+                color: 'white',
+                opacity: 0.95,
+                mt: 1,
+                textAlign: 'center',
+                maxWidth: 400,
+                mb: 1,
+              }}
+            >
+              Easily track and manage your working hours with our intuitive web app. Perfect for teams and individuals looking to stay organized, monitor productivity, and simplify time logging.
+            </Typography>
+          </Box>
+          {/* Decorative dots */}
+          <Box sx={{ position: 'absolute', top: 12, right: 12, zIndex: 1 }}>
+            <img src={OrangeDots} alt="Decorative dots" style={{ width: 60, height: 56 }} />
+          </Box>
         </Box>
-        {/* Decorative dots only on desktop */}
-        <Box sx={{ position: 'absolute', top: { xs: 12, md: 120 }, right: { xs: 12, md: '25%' }, zIndex: 1, display: { xs: 'none', md: 'block' } }}>
-          <img src={OrangeDots} alt="Decorative dots" style={{ width: 60, height: 56 }} />
-        </Box>
-        {/* Hide arrow and corner shape on mobile */}
-        <Box sx={{ position: 'absolute', bottom: 32, right: 32, zIndex: 1, display: { xs: 'none', md: 'block' } }}>
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="0" y="24" width="8" height="8" fill="white" />
-            <rect x="24" y="0" width="8" height="8" fill="white" />
-          </svg>
-        </Box>
-      </Box>
+      )}
 
-      {/* Cards section */}
+      {/* Desktop: LeftSidePanel for 50/50 split */}
+      {!isMobile && <LeftSidePanel />}
+
+      {/* Cards section - 50% on mobile, 50% on desktop */}
       <Box
         sx={{
-          width: '100%',
+          width: { xs: '100%', md: '50%' },
+          height: { xs: '50vh', md: '100vh' },
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: { xs: 'flex-start', md: 'center' },
+          justifyContent: 'center',
           bgcolor: 'background.default',
-          minHeight: { xs: 260, md: '100vh' },
-          pt: { xs: 6, md: 0 },
-          pb: { xs: 3, md: 0 },
+          py: { xs: 2, md: 0 },
         }}
       >
         <Container maxWidth="sm" sx={{ px: { xs: 1, sm: 2, md: 0 } }}>

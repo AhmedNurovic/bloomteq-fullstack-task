@@ -70,7 +70,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         password
       });
       
-      const { token: newToken, user: userData } = response.data;
+      const { access_token: newToken, user: userData } = response.data;
       setToken(newToken);
       setUser(userData);
       localStorage.setItem('token', newToken);
@@ -90,7 +90,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         password
       });
       
-      const { token: newToken, user: userData } = response.data;
+      const { access_token: newToken, user: userData } = response.data;
       setToken(newToken);
       setUser(userData);
       localStorage.setItem('token', newToken);

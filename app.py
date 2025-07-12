@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
 from flask import Blueprint, Flask, jsonify, request
+from flask_cors import CORS
 from flask_jwt_extended import (
     JWTManager,
     create_access_token,
@@ -416,6 +417,9 @@ def create_app(test_config=None):
 
     db.init_app(app)
     jwt.init_app(app)
+
+    # Enable CORS for frontend
+    CORS(app, origins=["http://localhost:5173"])
 
     # Register blueprints
     app.register_blueprint(_create_auth_blueprint(), url_prefix="/auth")
