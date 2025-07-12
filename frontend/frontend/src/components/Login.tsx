@@ -16,6 +16,7 @@ import {
   Login as LoginIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
+import { usePageTitle } from '../hooks/usePageTitle';
 import OrangeDots from '../assets/orange-dots.svg';
 import BlackArrow from '../assets/black-arrow.svg';
 import BlackArrowSmall from '../assets/black-arrow-small.svg';
@@ -28,6 +29,7 @@ const Login: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const theme = useTheme();
+  usePageTitle();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

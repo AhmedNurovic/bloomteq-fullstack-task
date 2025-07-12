@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { usePageTitle } from '../hooks/usePageTitle';
 import {
   Box,
   Typography,
@@ -57,6 +58,7 @@ const Dashboard: React.FC = () => {
     hours: '',
     description: ''
   });
+  usePageTitle();
 
   useEffect(() => {
     fetchWorkEntries();

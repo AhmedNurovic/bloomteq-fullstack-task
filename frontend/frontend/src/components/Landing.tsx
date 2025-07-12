@@ -10,11 +10,13 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import OrangeDots from '../assets/orange-dots.svg';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 const Landing: React.FC = () => {
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  usePageTitle();
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: isMobile ? 'column' : 'row', bgcolor: 'background.default' }}>

@@ -16,6 +16,7 @@ import {
   PersonAdd as PersonAddIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
+import { usePageTitle } from '../hooks/usePageTitle';
 import OrangeDots from '../assets/orange-dots.svg';
 import BlackArrow from '../assets/black-arrow.svg';
 import BlackArrowSmall from '../assets/black-arrow-small.svg';
@@ -29,6 +30,7 @@ const Register: React.FC = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
   const theme = useTheme();
+  usePageTitle();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
