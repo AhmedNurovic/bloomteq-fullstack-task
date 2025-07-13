@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Box, Typography, Button, Card, CardContent, Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, TextField, Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress, Pagination, InputAdornment, Alert, Checkbox, Avatar, Menu, MenuItem, Divider
 } from '@mui/material';
@@ -8,9 +8,7 @@ import EditIcon from '../assets/edit-icon.svg';
 import TaskCompletedIcon from '../assets/task-completed-icon.svg';
 import HoursWorkedIcon from '../assets/hours-worked-icon.svg';
 import TimeLoggedIcon from '../assets/time-logged-icon.svg';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useAuth } from '../contexts/AuthContext';
 import { useWorkEntries } from '../hooks/useWorkEntries';

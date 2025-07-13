@@ -53,6 +53,7 @@ class WorkEntry(db.Model):
     date = db.Column(db.Date, nullable=False)
     hours = db.Column(db.Float, nullable=False)
     description = db.Column(db.Text, nullable=False)
+    completed = db.Column(db.Boolean, default=False, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(
         db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
@@ -65,6 +66,7 @@ class WorkEntry(db.Model):
             "date": self.date.isoformat() if self.date else None,
             "hours": self.hours,
             "description": self.description,
+            "completed": self.completed,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
         }
@@ -203,8 +205,8 @@ def _validate_work_entry_data(data):
 
     required_fields = ["date", "hours", "description"]
     for field in required_fields:
-        if field not in data:
-            return False, f"{field} is required"
+        if field not in data or not data[field]:
+            return False, f"{field.capitalize()} is required"
 
     return True, None
 
@@ -212,16 +214,16 @@ def _validate_work_entry_data(data):
 def _apply_date_filters(query, start_date, end_date):
     """Apply date filters to query."""
     if start_date:
-        start_date_val, error = _validate_date_format(start_date)
+        start_val, error = _validate_date_format(start_date)
         if error:
-            return None, error
-        query = query.filter(WorkEntry.date >= start_date_val)
+            return query, error
+        query = query.filter(WorkEntry.date >= start_val)
 
     if end_date:
-        end_date_val, error = _validate_date_format(end_date)
+        end_val, error = _validate_date_format(end_date)
         if error:
-            return None, error
-        query = query.filter(WorkEntry.date <= end_date_val)
+            return query, error
+        query = query.filter(WorkEntry.date <= end_val)
 
     return query, None
 
@@ -229,14 +231,64 @@ def _apply_date_filters(query, start_date, end_date):
 def _apply_pagination(query, page=1, per_page=10):
     """Apply pagination to query."""
     try:
-        page = max(1, int(page))
-        per_page = max(1, min(100, int(per_page)))  # Limit per_page to 100
-    except (ValueError, TypeError):
+        page = int(page)
+        per_page = int(per_page)
+    except ValueError:
         page = 1
         per_page = 10
 
     offset = (page - 1) * per_page
     return query.offset(offset).limit(per_page), page, per_page
+
+
+def _get_statistics(user_id):
+    """Get work statistics for a user."""
+    today = datetime.now().date()
+    week_ago = today - timedelta(days=7)
+
+    # Today's hours (only completed entries)
+    today_hours = (
+        db.session.query(db.func.sum(WorkEntry.hours))
+        .filter(
+            WorkEntry.user_id == user_id,
+            WorkEntry.date == today,
+            WorkEntry.completed == True,
+        )
+        .scalar()
+        or 0
+    )
+
+    # Last week hours (only completed entries)
+    last_week_hours = (
+        db.session.query(db.func.sum(WorkEntry.hours))
+        .filter(
+            WorkEntry.user_id == user_id,
+            WorkEntry.date >= week_ago,
+            WorkEntry.date <= today,
+            WorkEntry.completed == True,
+        )
+        .scalar()
+        or 0
+    )
+
+    # Last week completed tasks (entries)
+    last_week_tasks = (
+        db.session.query(db.func.count(WorkEntry.id))
+        .filter(
+            WorkEntry.user_id == user_id,
+            WorkEntry.date >= week_ago,
+            WorkEntry.date <= today,
+            WorkEntry.completed == True,
+        )
+        .scalar()
+        or 0
+    )
+
+    return {
+        "today_hours": round(today_hours, 2),
+        "last_week_hours": round(last_week_hours, 2),
+        "last_week_tasks": last_week_tasks,
+    }
 
 
 def _create_work_entries_blueprint():
@@ -319,6 +371,7 @@ def _create_work_entries_blueprint():
             date=date_val,
             hours=hours,
             description=data["description"],
+            completed=data.get("completed", False),
         )
 
         try:
@@ -368,6 +421,9 @@ def _create_work_entries_blueprint():
             if "description" in data:
                 work_entry.description = data["description"]
 
+            if "completed" in data:
+                work_entry.completed = bool(data["completed"])
+
             db.session.commit()
             return (
                 jsonify(
@@ -400,6 +456,13 @@ def _create_work_entries_blueprint():
             db.session.rollback()
             return jsonify({"error": "Failed to delete work entry"}), 500
 
+    @work_entries_bp.route("/statistics", methods=["GET"])
+    @jwt_required()
+    def get_statistics():
+        current_user_id = get_jwt_identity()
+        stats = _get_statistics(int(current_user_id))
+        return jsonify(stats), 200
+
     return work_entries_bp
 
 
@@ -407,7 +470,7 @@ def create_app(test_config=None):
     app = Flask(__name__)
     app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev-secret-key")
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
-        "DATABASE_URL", "sqlite:///instance/work_tracker.db"
+        "DATABASE_URL", "sqlite:///instance/app.db"
     )
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "jwt-secret-key")
@@ -419,7 +482,10 @@ def create_app(test_config=None):
     jwt.init_app(app)
 
     # Enable CORS for frontend
-    CORS(app, origins=["http://localhost:5173"])
+    CORS(
+        app,
+        origins=["http://localhost:5173", "https://bloomteq-fullstack-task.vercel.app"],
+    )
 
     # Register blueprints
     app.register_blueprint(_create_auth_blueprint(), url_prefix="/auth")

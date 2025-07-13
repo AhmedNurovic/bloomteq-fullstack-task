@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import axios from 'axios';
+import { API_ENDPOINTS } from '../config/api';
 
 export interface WorkEntry {
   id: number;
@@ -40,7 +41,7 @@ export function useWorkEntries(jwt: string, filter: WorkEntriesFilter) {
     setError(null);
     try {
       const params: any = { ...memoizedFilter };
-      const res = await axios.get('http://127.0.0.1:5000/entries/', {
+      const res = await axios.get(API_ENDPOINTS.ENTRIES.LIST, {
         params,
         headers: { Authorization: `Bearer ${jwt}` },
       });

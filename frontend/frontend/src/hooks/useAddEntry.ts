@@ -1,16 +1,28 @@
 import { useState } from 'react';
 import axios from 'axios';
-import type { WorkEntry } from './useWorkEntries';
+import { API_ENDPOINTS } from '../config/api';
+
+export interface CreateWorkEntry {
+  date: string;
+  hours: number;
+  description: string;
+  completed?: boolean;
+}
 
 export function useAddEntry(jwt: string, onSuccess?: () => void) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const addEntry = async (entry: Omit<WorkEntry, 'id' | 'updated'>) => {
+  const addEntry = async (entry: CreateWorkEntry) => {
+    if (!jwt) {
+      setError('No authentication token available');
+      return;
+    }
+    
     setLoading(true);
     setError(null);
     try {
-      await axios.post('/api/entries', entry, {
+      await axios.post(API_ENDPOINTS.ENTRIES.CREATE, entry, {
         headers: { Authorization: `Bearer ${jwt}` },
       });
       if (onSuccess) onSuccess();
