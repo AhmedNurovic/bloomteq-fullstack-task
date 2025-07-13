@@ -16,7 +16,7 @@ export function useUpdateEntry(jwt: string, onSuccess?: () => void) {
     setLoading(true);
     setError(null);
     try {
-      await axios.put(API_ENDPOINTS.ENTRIES.UPDATE(id), entry, {
+      await axios.put(API_ENDPOINTS.ENTRY(id), entry, {
         headers: { Authorization: `Bearer ${jwt}` },
       });
       if (onSuccess) onSuccess();

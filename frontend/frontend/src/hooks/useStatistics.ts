@@ -19,7 +19,7 @@ export function useStatistics(jwt: string) {
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.get(API_ENDPOINTS.ENTRIES.STATISTICS, {
+      const res = await axios.get(API_ENDPOINTS.STATISTICS(), {
         headers: { Authorization: `Bearer ${jwt}` },
       });
       setData(res.data);
@@ -35,4 +35,4 @@ export function useStatistics(jwt: string) {
   }, [fetchStatistics]);
 
   return { data, loading, error, refetch: fetchStatistics };
-} 
+}

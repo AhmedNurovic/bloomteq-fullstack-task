@@ -41,7 +41,7 @@ export function useWorkEntries(jwt: string, filter: WorkEntriesFilter) {
     setError(null);
     try {
       const params: any = { ...memoizedFilter };
-      const res = await axios.get(API_ENDPOINTS.ENTRIES.LIST, {
+      const res = await axios.get(API_ENDPOINTS.ENTRIES(), {
         params,
         headers: { Authorization: `Bearer ${jwt}` },
       });

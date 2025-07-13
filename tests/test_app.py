@@ -415,7 +415,7 @@ def test_invalid_work_entry_data(client):
         headers=headers,
     )
     assert response.status_code == 400
-    assert b"hours is required" in response.data
+    assert b"Hours is required" in response.data
 
     # Missing 'date'
     response = client.post(
@@ -424,7 +424,7 @@ def test_invalid_work_entry_data(client):
         headers=headers,
     )
     assert response.status_code == 400
-    assert b"date is required" in response.data
+    assert b"Date is required" in response.data
 
     # Missing 'description'
     response = client.post(
@@ -433,4 +433,4 @@ def test_invalid_work_entry_data(client):
         headers=headers,
     )
     assert response.status_code == 400
-    assert b"description is required" in response.data
+    assert b"Description is required" in response.data

@@ -15,7 +15,7 @@ export function useDeleteEntry(jwt: string, onSuccess?: () => void) {
     setLoading(true);
     setError(null);
     try {
-      await axios.delete(API_ENDPOINTS.ENTRIES.DELETE(id), {
+      await axios.delete(API_ENDPOINTS.ENTRY(id), {
         headers: { Authorization: `Bearer ${jwt}` },
       });
       if (onSuccess) onSuccess();

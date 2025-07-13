@@ -36,10 +36,24 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         
+    - name: Install frontend dependencies
+      run: |
+        cd frontend/frontend
+        npm install
+
+    - name: Run frontend unit tests
+      run: |
+        cd frontend/frontend
+        npm test
+        
+    - name: Ensure instance directory exists
+      run: |
+        mkdir -p instance
+
     - name: Create .env file
       run: |
         cp env.example .env
-        echo "DATABASE_URL=sqlite:///test.db" >> .env
+        echo "DATABASE_URL=sqlite:///instance/test.db" >> .env
         
     - name: Run tests
       run: |

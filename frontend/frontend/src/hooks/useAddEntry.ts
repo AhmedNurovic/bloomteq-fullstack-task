@@ -22,7 +22,7 @@ export function useAddEntry(jwt: string, onSuccess?: () => void) {
     setLoading(true);
     setError(null);
     try {
-      await axios.post(API_ENDPOINTS.ENTRIES.CREATE, entry, {
+      await axios.post(API_ENDPOINTS.ENTRIES(), entry, {
         headers: { Authorization: `Bearer ${jwt}` },
       });
       if (onSuccess) onSuccess();
