@@ -195,3 +195,36 @@ cd frontend/frontend
 npm install
 npm test
 ```
+
+## Deployment
+
+### Frontend (Vercel)
+The frontend is already configured for Vercel deployment. Simply connect your GitHub repository to Vercel and it will auto-deploy.
+
+### Backend (Vercel)
+To deploy the Flask backend to Vercel:
+
+1. **Install Vercel CLI:**
+   ```bash
+   npm install -g vercel
+   ```
+
+2. **Login to Vercel:**
+   ```bash
+   vercel login
+   ```
+
+3. **Deploy from the root directory:**
+   ```bash
+   vercel
+   ```
+
+4. **Set environment variables in Vercel dashboard:**
+   - `SECRET_KEY`: Your Flask secret key
+   - `JWT_SECRET_KEY`: Your JWT secret key
+   - `DATABASE_URL`: Your database URL (for production, use a cloud database like PostgreSQL)
+
+5. **Update frontend API URL:**
+   After deployment, update `frontend/frontend/src/config/viteEnv.ts` with your actual Vercel backend URL.
+
+**Note:** For production, consider using a cloud database (PostgreSQL) instead of SQLite, as Vercel's serverless functions have read-only filesystem access.
