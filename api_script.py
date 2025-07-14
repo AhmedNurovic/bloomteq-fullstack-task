@@ -7,6 +7,8 @@ from datetime import date
 
 import requests
 
+from app import app as application
+
 BASE_URL = "http://localhost:5000"
 
 

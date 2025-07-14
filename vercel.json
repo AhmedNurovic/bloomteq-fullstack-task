@@ -1,0 +1,11 @@
+{
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api_script.py" },
+    { "source": "/(.*)", "destination": "/frontend/frontend/$1" }
+  ],
+  "functions": {
+    "api_script.py": {
+      "runtime": "python3.11"
+    }
+  }
+} 
