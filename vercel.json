@@ -1,11 +1,5 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "app.py",
-      "use": "@vercel/python"
-    }
-  ],
   "routes": [
     {
       "src": "/(.*)",
@@ -13,6 +7,9 @@
     }
   ],
   "env": {
-    "FLASK_ENV": "production"
+    "FLASK_ENV": "production",
+    "SECRET_KEY": "XVmH/bR1v6Usiogj+yPrFe/htbUw4ZcTLWzesE3d65D8Sde17QFch/dGILmlUEYPciR1MgAGojKRuY1IIvYUIA==",
+    "JWT_SECRET_KEY": "MO0F2U2td2avb7eQZkL8rH/wLFcoXu9AM4iv3Oxx94D3VwO5wxNUwtu9+0z9xlpRP240qej7Iboe0rfErZjXkQ==",
+    "DATABASE_URL": "postgresql://neondb_owner:npg_eMm9Ehzp7ivt@ep-rapid-bird-a2doz6ex-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
   }
 } 

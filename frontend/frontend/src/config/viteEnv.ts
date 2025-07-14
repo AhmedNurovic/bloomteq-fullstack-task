@@ -1,5 +1,5 @@
 export function getViteApiBaseUrl() {
   return import.meta.env.PROD
-    ? 'https://your-vercel-backend-url.vercel.app' // Replace with your actual Vercel backend URL
+    ? 'https://bloomteq-fullstack-task-mpbkdk86f-ahmednurovics-projects.vercel.app' // Updated to actual backend URL
     : 'http://localhost:5000';
 } 
