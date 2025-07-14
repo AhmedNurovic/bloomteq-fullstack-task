@@ -481,18 +481,14 @@ def create_app(test_config=None):
     db.init_app(app)
     jwt.init_app(app)
 
-    # Enable CORS for frontend (dev and prod)
-    allowed_origins = os.getenv("ALLOWED_ORIGINS")
-    if allowed_origins:
-        origins = [
-            origin.strip() for origin in allowed_origins.split(",") if origin.strip()
-        ]
-    else:
-        origins = [
-            r"http://localhost:\d+",
-            "https://bloomteq-fullstack-task.vercel.app",
-            "https://bloomteq-fullstack-task-*.vercel.app",
-        ]
+    # Enable CORS for frontend (dev and prod, including Vercel previews)
+    origins = [
+        r"http://localhost:\d+",
+        re.compile(
+            r"https://bloomteq-fullstack-task-[a-z0-9]+-ahmednurovics-projects\.vercel\.app"
+        ),
+        "https://bloomteq-fullstack-task.vercel.app",
+    ]
     CORS(
         app,
         origins=origins,
