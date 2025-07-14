@@ -2,5 +2,6 @@
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/api_script.py" },
     { "source": "/(.*)", "destination": "/frontend/frontend/$1" }
-  ]
+  ],
+  "outputDirectory": "frontend/frontend/dist"
 } 
