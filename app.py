@@ -484,7 +484,8 @@ def create_app(test_config=None):
     # Enable CORS for frontend
     CORS(
         app,
-        origins=["http://localhost:5173", "https://bloomteq-fullstack-task.vercel.app"],
+        origins=[r"http://localhost:\d+", "https://bloomteq-fullstack-task.vercel.app"],
+        supports_credentials=True,
     )
 
     # Register blueprints
