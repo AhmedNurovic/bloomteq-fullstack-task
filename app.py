@@ -483,10 +483,8 @@ def create_app(test_config=None):
 
     # Enable CORS for frontend (dev and prod, including Vercel previews)
     origins = [
-        r"http://localhost:\d+",
-        re.compile(
-            r"https://bloomteq-fullstack-task-[a-z0-9]+-ahmednurovics-projects\.vercel\.app"
-        ),
+        r"http://localhost(:\d+)?",
+        r"https://bloomteq-fullstack-task-.*\.vercel\.app",
         "https://bloomteq-fullstack-task.vercel.app",
     ]
     CORS(
@@ -494,6 +492,15 @@ def create_app(test_config=None):
         origins=origins,
         supports_credentials=True,
     )
+
+    # Temporary: Log CORS validation for debugging
+    @app.before_request
+    def log_cors_validation():
+        origin = request.headers.get("Origin")
+        if origin:
+            print(
+                f"Origin: {origin} - Allowed: {any(re.match(pattern, origin) for pattern in origins)}"
+            )
 
     # Register blueprints
     app.register_blueprint(_create_auth_blueprint(), url_prefix="/auth")
