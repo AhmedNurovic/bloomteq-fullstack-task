@@ -1,10 +1,10 @@
 {
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api_script.py" },
+    { "source": "/api/(.*)", "destination": "/api/api_script.py" },
     { "source": "/(.*)", "destination": "/frontend/frontend/$1" }
   ],
   "functions": {
-    "api_script.py": {
+    "api/api_script.py": {
       "runtime": "vercel-python@3.1.0"
     }
   }
