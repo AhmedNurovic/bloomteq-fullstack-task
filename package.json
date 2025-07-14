@@ -1,0 +1,10 @@
+{
+  "name": "bloomteq-monorepo",
+  "private": true,
+  "workspaces": [
+    "frontend/frontend"
+  ],
+  "scripts": {
+    "build": "cd frontend/frontend && npm install && npm run build"
+  }
+} 
