@@ -468,10 +468,27 @@ def _create_work_entries_blueprint():
 
 def create_app(test_config=None):
     app = Flask(__name__)
-    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev-secret-key")
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
-        "DATABASE_URL", "sqlite:///instance/app.db"
+
+    # Detect if running on Vercel (serverless)
+    on_vercel = (
+        os.environ.get("VERCEL")
+        or os.environ.get("VERCEL_ENV")
+        or os.environ.get("AWS_LAMBDA_FUNCTION_NAME")
     )
+
+    # Use Neon Postgres for production (Vercel), SQLite for local/dev
+    if on_vercel:
+        db_uri = os.getenv("DATABASE_URL")
+        if not db_uri:
+            # Fallback: use /tmp/app.db for SQLite if DATABASE_URL is not set (should not happen in prod)
+            db_uri = "sqlite:////tmp/app.db"
+        app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
+    else:
+        app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
+            "DATABASE_URL", "sqlite:///instance/app.db"
+        )
+
+    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev-secret-key")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "jwt-secret-key")
 
@@ -481,10 +498,17 @@ def create_app(test_config=None):
     db.init_app(app)
     jwt.init_app(app)
 
+    # Only create instance dir if not on Vercel and path is writable
+    if not on_vercel:
+        try:
+            os.makedirs(app.instance_path, exist_ok=True)
+        except Exception:
+            pass  # Ignore if already exists or not needed
+
     # Enable CORS for frontend (dev and prod, including Vercel previews)
     origins = [
-        r"http://localhost(:\d+)?",
-        r"https://bloomteq-fullstack-task-.*\.vercel\.app",
+        r"http://localhost(:\\d+)?",
+        r"https://bloomteq-fullstack-task-.*\\.vercel\\.app",
         "https://bloomteq-fullstack-task.vercel.app",
     ]
     CORS(
