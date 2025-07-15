@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import {
-  Box, Typography, Button, Card, CardContent, Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, TextField, Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress, Pagination, InputAdornment, Alert, Checkbox, Avatar, Menu, MenuItem, Divider
+  Box, Typography, Button, Card, CardContent, Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, TextField, Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress, Pagination, InputAdornment, Alert, Checkbox, Avatar, Menu, MenuItem, Divider, useMediaQuery
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { Add, FilterList, AccountCircle, Logout } from '@mui/icons-material';
 import DeleteIcon from '../assets/delete-icon.svg';
 import EditIcon from '../assets/edit-icon.svg';
@@ -21,6 +22,8 @@ const PAGE_SIZE = 8;
 
 const Dashboard: React.FC = () => {
   usePageTitle();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { user, token, logout } = useAuth();
   const [page, setPage] = useState(1);
   const [open, setOpen] = useState(false);
@@ -52,11 +55,15 @@ const Dashboard: React.FC = () => {
       setOpen(false);
       setForm({ date: '', hours: '', description: '', completed: false });
       refetch();
+      refetchStats();
     }
   );
   const { deleteEntry, loading: deleteLoading, error: deleteError } = useDeleteEntry(
     token || '',
-    refetch
+    () => {
+      refetch();
+      refetchStats();
+    }
   );
   const { updateEntry, loading: updateLoading, error: updateError } = useUpdateEntry(
     token || '',
@@ -64,9 +71,10 @@ const Dashboard: React.FC = () => {
       setEditOpen(false);
       setEditingEntry(null);
       refetch();
+      refetchStats();
     }
   );
-  const { data: stats, loading: statsLoading } = useStatistics(token || '');
+  const { data: stats, loading: statsLoading, refetch: refetchStats } = useStatistics(token || '');
 
   // Add entry handler
   const handleAdd = () => {
@@ -152,7 +160,7 @@ const Dashboard: React.FC = () => {
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex' }}>
       <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
-        <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Container maxWidth="lg" sx={{ py: isMobile ? 1 : 4, px: isMobile ? 0.5 : 2 }}>
           {/* Error alerts */}
           {(error || addError || deleteError || updateError) && (
             <Alert severity="error" sx={{ mb: 2 }}>
@@ -161,9 +169,16 @@ const Dashboard: React.FC = () => {
           )}
 
           {/* Top bar */}
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Box sx={{
+            display: 'flex',
+            flexDirection: isMobile ? 'column' : 'row',
+            justifyContent: 'space-between',
+            alignItems: isMobile ? 'stretch' : 'center',
+            mb: 2,
+            gap: isMobile ? 2 : 0
+          }}>
             {/* Profile section */}
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: isMobile ? 1 : 0 }}>
               <Button
                 onClick={handleProfileMenuOpen}
                 variant="outlined"
@@ -172,22 +187,23 @@ const Dashboard: React.FC = () => {
                     <AccountCircle sx={{ fontSize: 16 }} />
                   </Avatar>
                 }
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
                   gap: 1,
                   color: '#096DD9',
                   borderColor: '#096DD9',
-                borderRadius: 2,
+                  borderRadius: 2,
                   px: 2,
                   py: 1,
                   textTransform: 'none',
-                  '&:hover': { 
+                  width: isMobile ? '100%' : 'auto',
+                  '&:hover': {
                     backgroundColor: 'rgba(9, 109, 217, 0.04)',
                     borderColor: '#096DD9'
                   }
-              }}
-            >
+                }}
+              >
                 <Typography variant="body2" sx={{ color: '#096DD9', fontWeight: 500 }}>
                   {user?.email}
                 </Typography>
@@ -195,13 +211,19 @@ const Dashboard: React.FC = () => {
             </Box>
 
             {/* Action buttons */}
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <Button 
-                variant="contained" 
-                startIcon={<Add />} 
+            <Box sx={{
+              display: 'flex',
+              gap: isMobile ? 1 : 2,
+              flexDirection: isMobile ? 'column' : 'row',
+              width: isMobile ? '100%' : 'auto'
+            }}>
+              <Button
+                variant="contained"
+                startIcon={<Add />}
                 onClick={() => setOpen(true)}
-                sx={{ 
+                sx={{
                   backgroundColor: '#096DD9',
+                  width: isMobile ? '100%' : 'auto',
                   '&:hover': {
                     backgroundColor: '#0756B3',
                   },
@@ -209,7 +231,17 @@ const Dashboard: React.FC = () => {
               >
                 Add new work
               </Button>
-              <Button variant="outlined" startIcon={<FilterList />} onClick={() => setFilterOpen(true)} sx={{ borderColor: '#096DD9', color: '#096DD9', '&:hover': { borderColor: '#0756B3', color: '#0756B3' } }}>
+              <Button
+                variant="outlined"
+                startIcon={<FilterList />}
+                onClick={() => setFilterOpen(true)}
+                sx={{
+                  borderColor: '#096DD9',
+                  color: '#096DD9',
+                  width: isMobile ? '100%' : 'auto',
+                  '&:hover': { borderColor: '#0756B3', color: '#0756B3' }
+                }}
+              >
                 Filter
               </Button>
             </Box>
@@ -327,128 +359,184 @@ const Dashboard: React.FC = () => {
           </Menu>
 
           {/* Stats */}
-          <Box sx={{ display: 'flex', gap: 3, mb: 3, flexWrap: 'wrap' }}>
+          <Box sx={{
+            display: 'flex',
+            gap: 3,
+            mb: 3,
+            flexWrap: isMobile ? 'nowrap' : 'wrap',
+            flexDirection: isMobile ? 'column' : 'row',
+          }}>
             <Card sx={{ flex: 1, minWidth: 220, boxShadow: 0, border: '1.5px solid #F0F0F0' }}>
               <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Box sx={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <img src={TimeLoggedIcon} alt="Time logged" style={{ width: '100%', height: '100%' }} />
-                  </Box>
-                  <Box>
+                <Box sx={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'rgba(9,109,217,0.08)', borderRadius: '50%' }}>
+                  <img src={TimeLoggedIcon} alt="Time logged" style={{ width: '100%', height: '100%', filter: 'invert(27%) sepia(97%) saturate(749%) hue-rotate(191deg) brightness(92%) contrast(101%)' }} />
+                </Box>
+                <Box>
                   <Typography fontWeight={500} color="text.secondary" fontSize={16}>Today's Logged Hours</Typography>
                   <Typography fontWeight={700} color="#096DD9" fontSize={22}>
                     {statsLoading ? '...' : `${formatHours(stats?.today_hours || 0)}h`}
-                    </Typography>
+                  </Typography>
                 </Box>
               </CardContent>
             </Card>
             <Card sx={{ flex: 1, minWidth: 220, boxShadow: 0, border: '1.5px solid #F0F0F0' }}>
               <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Box sx={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <img src={HoursWorkedIcon} alt="Hours worked" style={{ width: '100%', height: '100%' }} />
-                  </Box>
-                  <Box>
+                <Box sx={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'rgba(9,109,217,0.08)', borderRadius: '50%' }}>
+                  <img src={HoursWorkedIcon} alt="Hours worked" style={{ width: '100%', height: '100%', filter: 'invert(27%) sepia(97%) saturate(749%) hue-rotate(191deg) brightness(92%) contrast(101%)' }} />
+                </Box>
+                <Box>
                   <Typography fontWeight={500} color="text.secondary" fontSize={16}>Hours worked - Last week</Typography>
                   <Typography fontWeight={700} color="#096DD9" fontSize={22}>
                     {statsLoading ? '...' : `${formatHours(stats?.last_week_hours || 0)}h`}
-                    </Typography>
+                  </Typography>
                 </Box>
               </CardContent>
             </Card>
             <Card sx={{ flex: 1, minWidth: 220, boxShadow: 0, border: '1.5px solid #F0F0F0' }}>
               <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Box sx={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <img src={TaskCompletedIcon} alt="Tasks completed" style={{ width: '100%', height: '100%' }} />
-                  </Box>
-                  <Box>
+                <Box sx={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'rgba(27,196,125,0.08)', borderRadius: '50%' }}>
+                  <img src={TaskCompletedIcon} alt="Tasks completed" style={{ width: '100%', height: '100%', filter: 'invert(56%) sepia(77%) saturate(464%) hue-rotate(97deg) brightness(92%) contrast(101%)' }} />
+                </Box>
+                <Box>
                   <Typography fontWeight={500} color="text.secondary" fontSize={16}>Tasks Completed - Last week</Typography>
                   <Typography fontWeight={700} color="#1BC47D" fontSize={22}>
                     {statsLoading ? '...' : stats?.last_week_tasks || 0}
-                    </Typography>
+                  </Typography>
                 </Box>
               </CardContent>
             </Card>
-        </Box>
+          </Box>
 
-          {/* Table */}
-          <Card sx={{ boxShadow: 0, border: '1.5px solid #F0F0F0' }}>
-            <CardContent sx={{ p: 0 }}>
-              <TableContainer>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell sx={{ fontWeight: 700, color: '#096DD9' }}>Date</TableCell>
-                      <TableCell sx={{ fontWeight: 700, color: '#096DD9' }}>Hours (h/min)</TableCell>
-                      <TableCell sx={{ fontWeight: 700, color: '#096DD9' }}>Description</TableCell>
-                      <TableCell sx={{ fontWeight: 700, color: '#096DD9' }}>Created</TableCell>
-                      <TableCell sx={{ fontWeight: 700, color: '#096DD9' }}>Updated</TableCell>
-                      <TableCell sx={{ fontWeight: 700, color: '#096DD9' }}>Completed</TableCell>
-                      <TableCell align="center" sx={{ fontWeight: 700, color: '#096DD9' }}>Actions</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {loading ? (
+          {/* Table or Card/List for Mobile */}
+          {isMobile ? (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 2 }}>
+              {loading ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+                  <CircularProgress size={32} />
+                </Box>
+              ) : entries.length === 0 ? (
+                <Typography color="text.secondary" align="center">No entries found.</Typography>
+              ) : (
+                entries.map(entry => (
+                  <Card key={entry.id} sx={{ boxShadow: 0, border: '1.5px solid #F0F0F0', p: 2 }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                      <Typography fontWeight={700} color="#096DD9">{formatDate(entry.date)}</Typography>
+                      <Typography fontSize={14}><b>Hours:</b> {formatHours(entry.hours)}</Typography>
+                      <Typography fontSize={14}><b>Description:</b> {entry.description}</Typography>
+                      <Typography fontSize={12} color="text.secondary">Created: {formatDate(entry.created_at)}</Typography>
+                      <Typography fontSize={12} color="text.secondary">Updated: {formatDate(entry.updated_at)}</Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
+                        <Checkbox
+                          checked={entry.completed}
+                          onChange={(e) => updateEntry(entry.id, { completed: e.target.checked })}
+                          color="primary"
+                          sx={{
+                            color: '#096DD9',
+                            '&.Mui-checked': {
+                              color: '#096DD9',
+                            },
+                          }}
+                        />
+                        <Typography fontSize={14}>Completed</Typography>
+                        <IconButton size="small" onClick={() => handleEdit(entry)} disabled={deleteLoading} sx={{ color: '#096DD9' }}>
+                          <img src={EditIcon} alt="Edit" style={{ width: 20, height: 20 }} />
+                        </IconButton>
+                        <IconButton size="small" onClick={(e) => handleDeleteClick(e, entry.id)} disabled={deleteLoading} sx={{ color: '#d32f2f' }}>
+                          <img src={DeleteIcon} alt="Delete" style={{ width: 20, height: 20 }} />
+                        </IconButton>
+                      </Box>
+                    </Box>
+                  </Card>
+                ))
+              )}
+            </Box>
+          ) : (
+            <Card sx={{ boxShadow: 0, border: '1.5px solid #F0F0F0', overflowX: 'auto' }}>
+              <CardContent sx={{ p: 0 }}>
+                <TableContainer sx={{ minWidth: 800 }}>
+                  <Table>
+                    <TableHead>
                       <TableRow>
-                        <TableCell colSpan={7} align="center">
-                          <CircularProgress size={32} />
-                        </TableCell>
+                        <TableCell sx={{ fontWeight: 700, color: '#096DD9' }}>Date</TableCell>
+                        <TableCell sx={{ fontWeight: 700, color: '#096DD9' }}>Hours (h/min)</TableCell>
+                        <TableCell sx={{ fontWeight: 700, color: '#096DD9' }}>Description</TableCell>
+                        <TableCell sx={{ fontWeight: 700, color: '#096DD9' }}>Created</TableCell>
+                        <TableCell sx={{ fontWeight: 700, color: '#096DD9' }}>Updated</TableCell>
+                        <TableCell sx={{ fontWeight: 700, color: '#096DD9' }}>Completed</TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 700, color: '#096DD9' }}>Actions</TableCell>
                       </TableRow>
-                    ) : entries.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={7} align="center">
-                          <Typography color="text.secondary">No entries found.</Typography>
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      entries.map(entry => (
-                        <TableRow key={entry.id}>
-                          <TableCell>{formatDate(entry.date)}</TableCell>
-                          <TableCell>{formatHours(entry.hours)}</TableCell>
-                          <TableCell>{entry.description}</TableCell>
-                          <TableCell>{formatDate(entry.created_at)}</TableCell>
-                          <TableCell>{formatDate(entry.updated_at)}</TableCell>
-                          <TableCell>
-                            <Checkbox
-                              checked={entry.completed}
-                              onChange={(e) => updateEntry(entry.id, { completed: e.target.checked })}
-                              color="primary"
-                            />
-                          </TableCell>
-                          <TableCell align="center">
-                            <IconButton 
-                              size="small" 
-                              onClick={() => handleEdit(entry)}
-                              disabled={deleteLoading}
-            sx={{
-                                color: '#096DD9',
-              '&:hover': {
-                                  backgroundColor: 'rgba(9, 109, 217, 0.04)',
-              },
-            }}
-          >
-                              <img src={EditIcon} alt="Edit" style={{ width: 20, height: 20 }} />
-                            </IconButton>
-                            <IconButton 
-                              size="small" 
-                              onClick={(e) => handleDeleteClick(e, entry.id)}
-                              disabled={deleteLoading}
-                              sx={{ 
-                                color: '#d32f2f',
-                                '&:hover': {
-                                  backgroundColor: 'rgba(211, 47, 47, 0.04)',
-                                },
-                              }}
-                            >
-                              <img src={DeleteIcon} alt="Delete" style={{ width: 20, height: 20 }} />
-              </IconButton>
+                    </TableHead>
+                    <TableBody>
+                      {loading ? (
+                        <TableRow>
+                          <TableCell colSpan={7} align="center">
+                            <CircularProgress size={32} />
                           </TableCell>
                         </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </CardContent>
-          </Card>
+                      ) : entries.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={7} align="center">
+                            <Typography color="text.secondary">No entries found.</Typography>
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        entries.map(entry => (
+                          <TableRow key={entry.id}>
+                            <TableCell>{formatDate(entry.date)}</TableCell>
+                            <TableCell>{formatHours(entry.hours)}</TableCell>
+                            <TableCell>{entry.description}</TableCell>
+                            <TableCell>{formatDate(entry.created_at)}</TableCell>
+                            <TableCell>{formatDate(entry.updated_at)}</TableCell>
+                            <TableCell>
+                              <Checkbox
+                                checked={entry.completed}
+                                onChange={(e) => updateEntry(entry.id, { completed: e.target.checked })}
+                                color="primary"
+                                sx={{
+                                  color: '#096DD9',
+                                  '&.Mui-checked': {
+                                    color: '#096DD9',
+                                  },
+                                }}
+                              />
+                            </TableCell>
+                            <TableCell align="center">
+                              <IconButton 
+                                size="small" 
+                                onClick={() => handleEdit(entry)}
+                                disabled={deleteLoading}
+                sx={{
+                                  color: '#096DD9',
+                  '&:hover': {
+                                  backgroundColor: 'rgba(9, 109, 217, 0.04)',
+                  },
+                }}
+            >
+                                <img src={EditIcon} alt="Edit" style={{ width: 20, height: 20 }} />
+                              </IconButton>
+                              <IconButton 
+                                size="small" 
+                                onClick={(e) => handleDeleteClick(e, entry.id)}
+                                disabled={deleteLoading}
+                                sx={{ 
+                                  color: '#d32f2f',
+                                  '&:hover': {
+                                    backgroundColor: 'rgba(211, 47, 47, 0.04)',
+                                  },
+                                }}
+                              >
+                                <img src={DeleteIcon} alt="Delete" style={{ width: 20, height: 20 }} />
+                              </IconButton>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Pagination */}
           {pagination && (
