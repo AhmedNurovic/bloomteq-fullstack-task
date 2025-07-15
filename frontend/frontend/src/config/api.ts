@@ -7,10 +7,10 @@ export function getApiBaseUrl() {
 }
 
 export const API_ENDPOINTS = {
-  REGISTER: () => `${getApiBaseUrl()}/auth/register`,
-  LOGIN: () => `${getApiBaseUrl()}/auth/login`,
-  PROFILE: () => `${getApiBaseUrl()}/auth/profile`,
-  ENTRIES: () => `${getApiBaseUrl()}/entries/`,
-  ENTRY: (id: number) => `${getApiBaseUrl()}/entries/${id}`,
-  STATISTICS: () => `${getApiBaseUrl()}/entries/statistics`,
+  REGISTER: () => `${getApiBaseUrl()}/api/auth/register`,
+  LOGIN: () => `${getApiBaseUrl()}/api/auth/login`,
+  PROFILE: () => `${getApiBaseUrl()}/api/auth/profile`,
+  ENTRIES: () => `${getApiBaseUrl()}/api/entries/`,
+  ENTRY: (id: number) => `${getApiBaseUrl()}/api/entries/${id}`,
+  STATISTICS: () => `${getApiBaseUrl()}/api/entries/statistics`,
 }; 

@@ -526,8 +526,8 @@ def create_app(test_config=None):
     )
 
     # Register blueprints
-    app.register_blueprint(_create_auth_blueprint(), url_prefix="/auth")
-    app.register_blueprint(_create_work_entries_blueprint(), url_prefix="/entries")
+    app.register_blueprint(_create_auth_blueprint(), url_prefix="/api/auth")
+    app.register_blueprint(_create_work_entries_blueprint(), url_prefix="/api/entries")
 
     # Health check endpoint
     @app.route("/api/health", methods=["GET"])
