@@ -11,8 +11,9 @@ import HoursWorkedIcon from '../assets/hours-worked-icon.svg';
 import TimeLoggedIcon from '../assets/time-logged-icon.svg';
 import dayjs from 'dayjs';
 import { usePageTitle } from '../hooks/usePageTitle';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContextBase';
 import { useWorkEntries } from '../hooks/useWorkEntries';
+import type { WorkEntry } from '../hooks/useWorkEntries';
 import { useAddEntry } from '../hooks/useAddEntry';
 import { useDeleteEntry } from '../hooks/useDeleteEntry';
 import { useUpdateEntry } from '../hooks/useUpdateEntry';
@@ -29,7 +30,7 @@ const Dashboard: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
-  const [editingEntry, setEditingEntry] = useState<any>(null);
+  const [editingEntry, setEditingEntry] = useState<WorkEntry | null>(null);
   const [form, setForm] = useState({ date: '', hours: '', description: '', completed: false });
   const [filter, setFilter] = useState({ start_date: '', end_date: '' });
   const [profileAnchorEl, setProfileAnchorEl] = useState<null | HTMLElement>(null);
@@ -85,7 +86,7 @@ const Dashboard: React.FC = () => {
     });
   };
 
-  const handleEdit = (entry: any) => {
+  const handleEdit = (entry: WorkEntry) => {
     setEditingEntry(entry);
     setForm({
       date: entry.date,
@@ -137,6 +138,14 @@ const Dashboard: React.FC = () => {
     handleProfileMenuClose();
     logout();
   };
+
+  const handleResetFilter = () => {
+    setFilter({ start_date: '', end_date: '' });
+    setPage(1);
+    refetch();
+  };
+
+  const hasActiveFilters = filter.start_date || filter.end_date;
 
   const formatHours = (hours: number) => {
     const h = Math.floor(hours);
@@ -233,8 +242,26 @@ const Dashboard: React.FC = () => {
                   '&:hover': { borderColor: '#0756B3', color: '#0756B3' }
                 }}
               >
-                Filter
+                Filter{hasActiveFilters && ' •'}
               </Button>
+              {hasActiveFilters && (
+                <Button
+                  variant="text"
+                  onClick={handleResetFilter}
+                  sx={{
+                    color: '#666',
+                    width: isMobile ? '100%' : 'auto',
+                    fontSize: '12px',
+                    textTransform: 'none',
+                    '&:hover': { 
+                      color: '#096DD9',
+                      backgroundColor: 'rgba(9, 109, 217, 0.04)'
+                    }
+                  }}
+                >
+                  Clear filters
+                </Button>
+              )}
             </Box>
           </Box>
 
@@ -533,7 +560,7 @@ const Dashboard: React.FC = () => {
           )}
 
           {/* Pagination */}
-          {pagination && (
+          {pagination && typeof pagination.total_pages === 'number' && (
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
               <Pagination 
                 count={pagination.total_pages} 
@@ -582,9 +609,10 @@ const Dashboard: React.FC = () => {
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
                   <TextField
                     label="Date"
-                  value={form.date} 
-                  onChange={e => setForm(f => ({ ...f, date: e.target.value }))} 
-                  fullWidth 
+                    type="date"
+                    value={form.date} 
+                    onChange={e => setForm(f => ({ ...f, date: e.target.value }))} 
+                    fullWidth 
                     required
                     InputLabelProps={{ shrink: true }}
                   />
@@ -769,6 +797,7 @@ const Dashboard: React.FC = () => {
               </Box>
             </DialogContent>
             <DialogActions>
+              <Button onClick={handleResetFilter} sx={{ color: '#096DD9', borderColor: '#096DD9', borderWidth: 1, borderStyle: 'solid', background: 'none', '&:hover': { color: '#0756B3', borderColor: '#0756B3', background: 'none' } }}>Reset</Button>
               <Button onClick={() => setFilterOpen(false)} sx={{ color: '#096DD9', borderColor: '#096DD9', borderWidth: 1, borderStyle: 'solid', background: 'none', '&:hover': { color: '#0756B3', borderColor: '#0756B3', background: 'none' } }}>Close</Button>
               <Button 
                 variant="contained" 
