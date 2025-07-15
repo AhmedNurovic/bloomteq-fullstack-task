@@ -282,7 +282,7 @@ const Login: React.FC = () => {
               cursor: 'pointer',
               zIndex: 10,
             }}
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/')}
           >
             <img src={BlackArrowSmall} alt="back" style={{ width: 20, height: 20, marginRight: 8, filter: 'invert(0%)' }} />
             <Typography sx={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500, fontSize: 16, color: 'black' }}>Back</Typography>
@@ -290,7 +290,7 @@ const Login: React.FC = () => {
           {/* Mobile back button */}
           <Box sx={{ width: '100%', display: { xs: 'flex', md: 'none' }, justifyContent: 'center', alignItems: 'center', mt: 4, mb: 2 }}>
             <Box
-              onClick={() => navigate(-1)}
+              onClick={() => navigate('/')}
               sx={{
                 width: 56,
                 height: 56,

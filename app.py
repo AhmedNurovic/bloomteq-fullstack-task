@@ -521,7 +521,7 @@ def create_app(test_config=None):
             "http://127.0.0.1:5173",
             "http://localhost:3000",
             "http://127.0.0.1:3000",
-            re.compile(r"https://bloomteq-fullstack-task(?:-[a-z0-9]+)?\.vercel\.app"),
+            re.compile(r"https://(?:.*\.)?vercel\.app"),
         ]
     print("CORS allowed origins:", origins)
     CORS(
