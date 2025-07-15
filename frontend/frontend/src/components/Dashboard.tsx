@@ -172,13 +172,13 @@ const Dashboard: React.FC = () => {
                     <AccountCircle sx={{ fontSize: 16 }} />
                   </Avatar>
                 }
-                sx={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
                   gap: 1,
                   color: '#096DD9',
                   borderColor: '#096DD9',
-                  borderRadius: 2,
+                borderRadius: 2,
                   px: 2,
                   py: 1,
                   textTransform: 'none',
@@ -186,8 +186,8 @@ const Dashboard: React.FC = () => {
                     backgroundColor: 'rgba(9, 109, 217, 0.04)',
                     borderColor: '#096DD9'
                   }
-                }}
-              >
+              }}
+            >
                 <Typography variant="body2" sx={{ color: '#096DD9', fontWeight: 500 }}>
                   {user?.email}
                 </Typography>
@@ -294,22 +294,22 @@ const Dashboard: React.FC = () => {
                 <Button 
                   onClick={handleDeleteCancel}
                   variant="outlined"
-                  sx={{ 
+              sx={{
                     borderColor: '#ddd',
                     color: '#666',
                     '&:hover': {
                       borderColor: '#999',
                       backgroundColor: '#f5f5f5'
                     }
-                  }}
-                >
+              }}
+            >
                   Cancel
                 </Button>
                 <Button 
                   onClick={handleDeleteConfirm}
                   variant="contained"
                   disabled={deleteLoading}
-                  sx={{ 
+                    sx={{
                     backgroundColor: '#d32f2f',
                     '&:hover': {
                       backgroundColor: '#b71c1c',
@@ -332,12 +332,12 @@ const Dashboard: React.FC = () => {
               <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 <Box sx={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <img src={TimeLoggedIcon} alt="Time logged" style={{ width: '100%', height: '100%' }} />
-                </Box>
-                <Box>
+                  </Box>
+                  <Box>
                   <Typography fontWeight={500} color="text.secondary" fontSize={16}>Today's Logged Hours</Typography>
                   <Typography fontWeight={700} color="#096DD9" fontSize={22}>
                     {statsLoading ? '...' : `${formatHours(stats?.today_hours || 0)}h`}
-                  </Typography>
+                    </Typography>
                 </Box>
               </CardContent>
             </Card>
@@ -345,12 +345,12 @@ const Dashboard: React.FC = () => {
               <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 <Box sx={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <img src={HoursWorkedIcon} alt="Hours worked" style={{ width: '100%', height: '100%' }} />
-                </Box>
-                <Box>
+                  </Box>
+                  <Box>
                   <Typography fontWeight={500} color="text.secondary" fontSize={16}>Hours worked - Last week</Typography>
                   <Typography fontWeight={700} color="#096DD9" fontSize={22}>
                     {statsLoading ? '...' : `${formatHours(stats?.last_week_hours || 0)}h`}
-                  </Typography>
+                    </Typography>
                 </Box>
               </CardContent>
             </Card>
@@ -358,16 +358,16 @@ const Dashboard: React.FC = () => {
               <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 <Box sx={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <img src={TaskCompletedIcon} alt="Tasks completed" style={{ width: '100%', height: '100%' }} />
-                </Box>
-                <Box>
+                  </Box>
+                  <Box>
                   <Typography fontWeight={500} color="text.secondary" fontSize={16}>Tasks Completed - Last week</Typography>
                   <Typography fontWeight={700} color="#1BC47D" fontSize={22}>
                     {statsLoading ? '...' : stats?.last_week_tasks || 0}
-                  </Typography>
+                    </Typography>
                 </Box>
               </CardContent>
             </Card>
-          </Box>
+        </Box>
 
           {/* Table */}
           <Card sx={{ boxShadow: 0, border: '1.5px solid #F0F0F0' }}>
@@ -424,13 +424,13 @@ const Dashboard: React.FC = () => {
                               size="small" 
                               onClick={() => handleEdit(entry)}
                               disabled={deleteLoading}
-                              sx={{ 
+            sx={{
                                 color: '#096DD9',
-                                '&:hover': {
+              '&:hover': {
                                   backgroundColor: 'rgba(9, 109, 217, 0.04)',
-                                },
-                              }}
-                            >
+              },
+            }}
+          >
                               <img src={EditIcon} alt="Edit" style={{ width: 20, height: 20 }} />
                             </IconButton>
                             <IconButton 
@@ -445,7 +445,7 @@ const Dashboard: React.FC = () => {
                               }}
                             >
                               <img src={DeleteIcon} alt="Delete" style={{ width: 20, height: 20 }} />
-                            </IconButton>
+              </IconButton>
                           </TableCell>
                         </TableRow>
                       ))
@@ -504,34 +504,34 @@ const Dashboard: React.FC = () => {
             <DialogTitle>Add New Work Entry</DialogTitle>
             <DialogContent>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
-                <TextField 
-                  label="Date" 
-                  type="date"
+                  <TextField
+                    label="Date"
+                    type="date"
                   value={form.date} 
                   onChange={e => setForm(f => ({ ...f, date: e.target.value }))} 
                   fullWidth 
-                  required 
-                  InputLabelProps={{ shrink: true }}
-                />
-                <TextField 
-                  label="Hours" 
-                  type="number"
+                    required
+                    InputLabelProps={{ shrink: true }}
+                  />
+                  <TextField
+                    label="Hours"
+                    type="number"
                   value={form.hours} 
                   onChange={e => setForm(f => ({ ...f, hours: e.target.value }))} 
                   fullWidth 
-                  required 
+                    required
                   placeholder="e.g. 2.5" 
                   InputProps={{ 
                     startAdornment: <InputAdornment position="start">⏰</InputAdornment> 
                   }} 
-                />
-                <TextField 
+                  />
+                <TextField
                   label="Description" 
                   value={form.description} 
                   onChange={e => setForm(f => ({ ...f, description: e.target.value }))} 
-                  fullWidth 
-                  required 
-                  multiline 
+                  fullWidth
+                  required
+                  multiline
                   minRows={2} 
                 />
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -544,14 +544,14 @@ const Dashboard: React.FC = () => {
                         color: '#096DD9',
                       },
                     }}
-                  />
+                />
                   <Typography>Mark as completed</Typography>
                 </Box>
               </Box>
             </DialogContent>
             <DialogActions>
               <Button onClick={() => setOpen(false)}>Cancel</Button>
-              <Button 
+              <Button
                 onClick={handleAdd} 
                 variant="contained"
                 disabled={addLoading}
@@ -619,11 +619,11 @@ const Dashboard: React.FC = () => {
             </DialogContent>
             <DialogActions>
               <Button onClick={() => setEditOpen(false)}>Cancel</Button>
-              <Button 
+              <Button
                 onClick={handleUpdate} 
                 variant="contained"
                 disabled={updateLoading}
-                sx={{ 
+                sx={{
                   backgroundColor: '#096DD9',
                   '&:hover': {
                     backgroundColor: '#0756B3',
@@ -633,7 +633,7 @@ const Dashboard: React.FC = () => {
                 {updateLoading ? <CircularProgress size={20} /> : 'Update'}
               </Button>
             </DialogActions>
-          </Dialog>
+        </Dialog>
 
           {/* Filter Dialog */}
           <Dialog open={filterOpen} onClose={() => setFilterOpen(false)} maxWidth="xs" fullWidth>
@@ -667,19 +667,19 @@ const Dashboard: React.FC = () => {
                   setPage(1);
                   refetch();
                 }}
-                sx={{ 
+                      sx={{
                   backgroundColor: '#096DD9',
-                  '&:hover': {
+                            '&:hover': {
                     backgroundColor: '#0756B3',
-                  },
-                }}
-              >
+                            },
+                          }}
+                        >
                 Apply
               </Button>
             </DialogActions>
           </Dialog>
         </Container>
-      </Box>
+                      </Box>
     </Box>
   );
 };

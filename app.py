@@ -530,6 +530,11 @@ def create_app(test_config=None):
     app.register_blueprint(_create_auth_blueprint(), url_prefix="/auth")
     app.register_blueprint(_create_work_entries_blueprint(), url_prefix="/entries")
 
+    # Health check endpoint
+    @app.route("/api/health", methods=["GET"])
+    def health_check():
+        return jsonify({"status": "healthy", "message": "API is running"}), 200
+
     # Create database tables
     with app.app_context():
         db.create_all()

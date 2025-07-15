@@ -3,5 +3,10 @@
     { "source": "/api/(.*)", "destination": "/api/api_script.py" },
     { "source": "/(.*)", "destination": "/frontend/frontend/$1" }
   ],
-  "outputDirectory": "frontend/frontend/dist"
+  "outputDirectory": "frontend/frontend/dist",
+  "functions": {
+    "api/api_script.py": {
+      "runtime": "python3.9"
+    }
+  }
 } 

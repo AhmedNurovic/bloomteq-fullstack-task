@@ -23,71 +23,71 @@ const Landing: React.FC = () => {
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: isMobile ? 'column' : 'row', bgcolor: 'background.default' }}>
       {/* Mobile: Blue section at top - 50% height */}
       {isMobile && (
-        <Box
-          sx={{
-            width: '100%',
-            background: '#096DD9',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            position: 'relative',
+      <Box
+        sx={{
+          width: '100%',
+          background: '#096DD9',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative',
             height: '50vh',
             py: 2,
-            overflow: 'hidden',
-          }}
-        >
-          {/* Centered content (LOGO and intro text) */}
-          <Box sx={{
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flex: 1,
-            zIndex: 2,
+          overflow: 'hidden',
+        }}
+      >
+        {/* Centered content (LOGO and intro text) */}
+        <Box sx={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flex: 1,
+          zIndex: 2,
             px: 2,
-          }}>
-            <h1 style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 700, fontSize: 36, color: 'white', margin: 0, letterSpacing: 2, textAlign: 'center' }}>LOGO</h1>
-            <Typography
-              sx={{
-                fontFamily: 'Poppins, sans-serif',
-                fontWeight: 700,
+        }}>
+          <h1 style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 700, fontSize: 36, color: 'white', margin: 0, letterSpacing: 2, textAlign: 'center' }}>LOGO</h1>
+          <Typography
+            sx={{
+              fontFamily: 'Poppins, sans-serif',
+              fontWeight: 700,
                 fontSize: 22,
                 lineHeight: '32px',
-                letterSpacing: 0,
-                color: 'white',
-                mt: 2,
-                textAlign: 'center',
-                maxWidth: 400,
+              letterSpacing: 0,
+              color: 'white',
+              mt: 2,
+              textAlign: 'center',
+              maxWidth: 400,
                 mb: 1,
-              }}
-            >
-              Time Track Management <br /> Web App
-            </Typography>
-            <Typography
-              sx={{
-                fontFamily: 'Poppins, sans-serif',
-                fontWeight: 500,
+            }}
+          >
+            Time Track Management <br /> Web App
+          </Typography>
+          <Typography
+            sx={{
+              fontFamily: 'Poppins, sans-serif',
+              fontWeight: 500,
                 fontSize: 15,
                 lineHeight: '22px',
-                letterSpacing: 0,
-                color: 'white',
-                opacity: 0.95,
-                mt: 1,
-                textAlign: 'center',
-                maxWidth: 400,
+              letterSpacing: 0,
+              color: 'white',
+              opacity: 0.95,
+              mt: 1,
+              textAlign: 'center',
+              maxWidth: 400,
                 mb: 1,
-              }}
-            >
-              Easily track and manage your working hours with our intuitive web app. Perfect for teams and individuals looking to stay organized, monitor productivity, and simplify time logging.
-            </Typography>
-          </Box>
+            }}
+          >
+            Easily track and manage your working hours with our intuitive web app. Perfect for teams and individuals looking to stay organized, monitor productivity, and simplify time logging.
+          </Typography>
+        </Box>
           {/* Decorative dots */}
           <Box sx={{ position: 'absolute', top: 12, right: 12, zIndex: 1 }}>
-            <img src={OrangeDots} alt="Decorative dots" style={{ width: 60, height: 56 }} />
-          </Box>
+          <img src={OrangeDots} alt="Decorative dots" style={{ width: 60, height: 56 }} />
+        </Box>
         </Box>
       )}
 
