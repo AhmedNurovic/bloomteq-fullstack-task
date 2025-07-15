@@ -66,8 +66,8 @@ const Login: React.FC = () => {
           overflow: 'hidden',
         }}
       >
-        {/* Logo at top left, only on mobile */}
-        <Box sx={{ position: 'absolute', top: 16, left: 16, zIndex: 10, color: 'white', fontSize: { xs: 18, md: 24 }, display: { xs: 'block', md: 'none' } }}>
+        {/* Logo at top left, always on desktop */}
+        <Box sx={{ position: 'absolute', top: 16, left: 16, zIndex: 10, color: 'white', fontSize: { xs: 18, md: 24 }, display: { xs: 'none', md: 'block' } }}>
           <h1 style={{ fontSize: 'inherit', margin: 0 }}>LOGO</h1>
         </Box>
         {/* Decorative dots, now at right: 25% of the blue div's width */}
@@ -136,8 +136,8 @@ const Login: React.FC = () => {
           minHeight: '100vh',
         }}
       >
-        {/* LOGO text placeholder above the form */}
-        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'absolute', top: { xs: 24, md: 48 }, left: 0, zIndex: 3 }}>
+        {/* Centered logo above the form only on mobile */}
+        <Box sx={{ width: '100%', display: { xs: 'flex', md: 'none' }, justifyContent: 'center', alignItems: 'center', position: 'absolute', top: 24, left: 0, zIndex: 3 }}>
           <h1 style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 700, fontSize: 32, color: '#096DD9', margin: 0, letterSpacing: 2 }}>LOGO</h1>
         </Box>
         {/* Sleek blue accent (dots) in top right, behind form */}
