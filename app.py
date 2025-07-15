@@ -506,23 +506,12 @@ def create_app(test_config=None):
             pass  # Ignore if already exists or not needed
 
     # Robust Flask-CORS only setup (no manual preflight handler)
-    origins_env = os.getenv("CORS_ORIGINS")
-    origins = []
-    if origins_env:
-        for o in origins_env.split(","):
-            o = o.strip()
-            if o.startswith("http") and "(?:" in o:
-                origins.append(re.compile(o))
-            else:
-                origins.append(o)
-    else:
-        origins = [
-            "http://localhost:5173",
-            "http://127.0.0.1:5173",
-            "http://localhost:3000",
-            "http://127.0.0.1:3000",
-            re.compile(r"https://(?:.*\.)?vercel\.app"),
-        ]
+    origins = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ]
     CORS(
         app,
         origins=origins,
@@ -535,6 +524,17 @@ def create_app(test_config=None):
     # Register blueprints
     app.register_blueprint(_create_auth_blueprint(), url_prefix="/api/auth")
     app.register_blueprint(_create_work_entries_blueprint(), url_prefix="/api/entries")
+
+    # Health check endpoint
+    @app.route("/health", methods=["GET"])
+    def health():
+        try:
+            # Try a simple DB query
+            db.session.execute("SELECT 1")
+            db_status = "ok"
+        except Exception:
+            db_status = "error"
+        return jsonify({"status": "ok", "db": db_status}), 200
 
     # Create database tables
     with app.app_context():

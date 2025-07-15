@@ -196,35 +196,48 @@ npm install
 npm test
 ```
 
-## Deployment
+## Health Check Endpoint
 
-### Frontend (Vercel)
-The frontend is already configured for Vercel deployment. Simply connect your GitHub repository to Vercel and it will auto-deploy.
+A health check endpoint is available for monitoring and uptime checks:
 
-### Backend (Vercel)
-To deploy the Flask backend to Vercel:
+```
+GET /health
+```
+**Response:**
+```
+{
+  "status": "ok",
+  "db": "ok" // or "error" if the database is unreachable
+}
+```
+Use this endpoint with uptime monitoring services (e.g., UptimeRobot, Pingdom, cloud provider health checks).
 
-1. **Install Vercel CLI:**
-   ```bash
-   npm install -g vercel
-   ```
+## Production Monitoring
 
-2. **Login to Vercel:**
-   ```bash
-   vercel login
-   ```
+**Recommended best practices:**
+- Use the `/health` endpoint for uptime monitoring.
+- Integrate [Sentry](https://sentry.io/) or a similar service for error monitoring in both backend and frontend.
+- Set up alerts for downtime and errors.
+- Use a production WSGI server (e.g., Gunicorn) for Flask deployments.
 
-3. **Deploy from the root directory:**
-   ```bash
-   vercel
-   ```
+**Sample Sentry integration for Flask:**
+```python
+import sentry_sdk
+from sentry_sdk.integrations.flask import FlaskIntegration
 
-4. **Set environment variables in Vercel dashboard:**
-   - `SECRET_KEY`: Your Flask secret key
-   - `JWT_SECRET_KEY`: Your JWT secret key
-   - `DATABASE_URL`: Your database URL (for production, use a cloud database like PostgreSQL)
+sentry_sdk.init(
+    dsn="YOUR_SENTRY_DSN",
+    integrations=[FlaskIntegration()],
+    traces_sample_rate=1.0,
+    environment="production"
+)
+```
 
-5. **Update frontend API URL:**
-   After deployment, update `frontend/frontend/src/config/viteEnv.ts` with your actual Vercel backend URL.
-
-**Note:** For production, consider using a cloud database (PostgreSQL) instead of SQLite, as Vercel's serverless functions have read-only filesystem access.
+**Sample Sentry integration for React:**
+```js
+import * as Sentry from "@sentry/react";
+Sentry.init({
+  dsn: "YOUR_SENTRY_DSN",
+  environment: "production",
+});
+```
