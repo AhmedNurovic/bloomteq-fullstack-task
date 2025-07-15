@@ -15,7 +15,7 @@ import {
 import {
   Login as LoginIcon,
 } from '@mui/icons-material';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContextBase';
 import { usePageTitle } from '../hooks/usePageTitle';
 import OrangeDots from '../assets/orange-dots.svg';
 import BlackArrow from '../assets/black-arrow.svg';
@@ -42,7 +42,7 @@ const Login: React.FC = () => {
       } else {
         setError(result.error || 'Login failed');
       }
-    } catch (err) {
+    } catch {
       setError('Invalid email or password');
     } finally {
       setIsLoading(false);

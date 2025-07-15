@@ -1,32 +1,12 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import axios from 'axios';
 import { API_ENDPOINTS } from '../config/api';
+import { AuthContext } from './AuthContextBase';
+import type { User } from './AuthContextBase';
+import type { AxiosError } from 'axios';
 
-interface User {
-  id: number;
-  email: string;
-}
-
-interface AuthContextType {
-  user: User | null;
-  token: string | null;
-  loading: boolean;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  register: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  logout: () => void;
-  isAuthenticated: boolean;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-export const useAuth = (): AuthContextType => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
+type ErrorResponse = { error?: string; message?: string };
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -76,10 +56,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUser(userData);
       localStorage.setItem('token', newToken);
       return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
+      let message = 'Login failed';
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'isAxiosError' in error &&
+        (error as AxiosError).isAxiosError &&
+        typeof (error as AxiosError<ErrorResponse>).response?.data?.message === 'string'
+      ) {
+        message = (error as AxiosError<ErrorResponse>).response?.data?.message as string;
+      } else if (error instanceof Error) {
+        message = error.message;
+      }
       return { 
         success: false, 
-        error: error.response?.data?.message || 'Login failed' 
+        error: message
       };
     }
   };
@@ -96,10 +88,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUser(userData);
       localStorage.setItem('token', newToken);
       return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
+      let message = 'Registration failed';
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'isAxiosError' in error &&
+        (error as AxiosError).isAxiosError &&
+        typeof (error as AxiosError<ErrorResponse>).response?.data?.message === 'string'
+      ) {
+        message = (error as AxiosError<ErrorResponse>).response?.data?.message as string;
+      } else if (error instanceof Error) {
+        message = error.message;
+      }
       return { 
         success: false, 
-        error: error.response?.data?.message || 'Registration failed' 
+        error: message
       };
     }
   };
@@ -111,7 +115,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     delete axios.defaults.headers.common['Authorization'];
   };
 
-  const value: AuthContextType = {
+  const value = {
     user,
     token,
     loading,

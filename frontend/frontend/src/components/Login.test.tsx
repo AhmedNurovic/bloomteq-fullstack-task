@@ -1,9 +1,9 @@
-// @ts-nocheck
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import Login from './Login';
 import { AuthProvider } from '../contexts/AuthContext';
 import { MemoryRouter } from 'react-router-dom';
+import '@testing-library/jest-dom';
 
 describe('Login', () => {
   it('renders the Login form', () => {

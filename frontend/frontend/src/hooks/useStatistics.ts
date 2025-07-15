@@ -1,6 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { API_ENDPOINTS } from '../config/api';
+import type { AxiosError } from 'axios';
+
+type ErrorResponse = { error?: string; message?: string };
 
 export interface WorkStatistics {
   today_hours: number;
@@ -23,8 +26,20 @@ export function useStatistics(jwt: string) {
         headers: { Authorization: `Bearer ${jwt}` },
       });
       setData(res.data);
-    } catch (err: any) {
-      setError(err.response?.data?.error || err.message || 'Failed to fetch statistics');
+    } catch (err: unknown) {
+      if (
+        typeof err === 'object' &&
+        err !== null &&
+        'isAxiosError' in err &&
+        (err as AxiosError).isAxiosError &&
+        typeof (err as AxiosError<ErrorResponse>).response?.data?.error === 'string'
+      ) {
+        setError((err as AxiosError<ErrorResponse>).response?.data?.error as string);
+      } else if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Failed to fetch statistics');
+      }
     } finally {
       setLoading(false);
     }

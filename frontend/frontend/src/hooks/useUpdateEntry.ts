@@ -2,6 +2,8 @@ import { useState } from 'react';
 import axios from 'axios';
 import { API_ENDPOINTS } from '../config/api';
 import type { CreateWorkEntry } from './useAddEntry';
+import type { AxiosError } from 'axios';
+type ErrorResponse = { error?: string; message?: string };
 
 export function useUpdateEntry(jwt: string, onSuccess?: () => void) {
   const [loading, setLoading] = useState(false);
@@ -20,8 +22,20 @@ export function useUpdateEntry(jwt: string, onSuccess?: () => void) {
         headers: { Authorization: `Bearer ${jwt}` },
       });
       if (onSuccess) onSuccess();
-    } catch (err: any) {
-      setError(err.response?.data?.error || err.message || 'Failed to update entry');
+    } catch (err: unknown) {
+      if (
+        typeof err === 'object' &&
+        err !== null &&
+        'isAxiosError' in err &&
+        (err as AxiosError).isAxiosError &&
+        typeof (err as AxiosError<ErrorResponse>).response?.data?.error === 'string'
+      ) {
+        setError((err as AxiosError<ErrorResponse>).response?.data?.error as string);
+      } else if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Failed to update entry');
+      }
     } finally {
       setLoading(false);
     }

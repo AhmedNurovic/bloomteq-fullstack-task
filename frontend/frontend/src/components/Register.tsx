@@ -15,7 +15,7 @@ import {
 import {
   PersonAdd as PersonAddIcon,
 } from '@mui/icons-material';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContextBase';
 import { usePageTitle } from '../hooks/usePageTitle';
 import OrangeDots from '../assets/orange-dots.svg';
 import BlackArrow from '../assets/black-arrow.svg';
@@ -51,7 +51,7 @@ const Register: React.FC = () => {
       } else {
         setError(result.error || 'Registration failed');
       }
-    } catch (err) {
+    } catch {
       setError('Registration failed');
     } finally {
       setIsLoading(false);
