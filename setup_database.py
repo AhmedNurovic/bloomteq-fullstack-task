@@ -6,11 +6,17 @@ Run this script to initialize your production database
 
 import os
 
+from dotenv import load_dotenv
+
+load_dotenv()  # Loads .env if present
+
+DATABASE_URL = os.environ.get("DATABASE_URL")
+if not DATABASE_URL:
+    raise RuntimeError("DATABASE_URL environment variable not set")
+
+
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
-
-# Database connection string
-DATABASE_URL = "postgresql://neondb_owner:npg_eMm9Ehzp7ivt@ep-rapid-bird-a2doz6ex-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 
 
 def setup_database():
