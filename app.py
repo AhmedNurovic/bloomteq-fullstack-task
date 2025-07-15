@@ -3,7 +3,7 @@ import re
 from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
-from flask import Blueprint, Flask, jsonify, make_response, request
+from flask import Blueprint, Flask, jsonify, request
 from flask_cors import CORS
 from flask_jwt_extended import (
     JWTManager,
@@ -505,17 +505,25 @@ def create_app(test_config=None):
         except Exception:
             pass  # Ignore if already exists or not needed
 
-    # Updated CORS configuration: get origins from environment variable
+    # Robust Flask-CORS only setup (no manual preflight handler)
     origins_env = os.getenv("CORS_ORIGINS")
+    origins = []
     if origins_env:
-        origins = [o.strip() for o in origins_env.split(",") if o.strip()]
+        for o in origins_env.split(","):
+            o = o.strip()
+            if o.startswith("http") and "(?:" in o:
+                origins.append(re.compile(o))
+            else:
+                origins.append(o)
     else:
         origins = [
-            r"https://bloomteq-fullstack-task(?:-[a-z0-9]+)?\.vercel\.app",
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
             "http://localhost:3000",
+            "http://127.0.0.1:3000",
+            re.compile(r"https://bloomteq-fullstack-task(?:-[a-z0-9]+)?\.vercel\.app"),
         ]
-
-    # Enable CORS with updated configuration
+    print("CORS allowed origins:", origins)
     CORS(
         app,
         origins=origins,
@@ -528,11 +536,6 @@ def create_app(test_config=None):
     # Register blueprints
     app.register_blueprint(_create_auth_blueprint(), url_prefix="/api/auth")
     app.register_blueprint(_create_work_entries_blueprint(), url_prefix="/api/entries")
-
-    # Health check endpoint
-    @app.route("/api/health", methods=["GET"])
-    def health_check():
-        return jsonify({"status": "healthy", "message": "API is running"}), 200
 
     # Create database tables
     with app.app_context():
