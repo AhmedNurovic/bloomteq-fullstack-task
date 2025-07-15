@@ -521,28 +521,6 @@ def create_app(test_config=None):
         allow_headers=["Content-Type", "Authorization"],  # Explicitly allow headers
     )
 
-    # Add explicit OPTIONS handler for all routes
-    @app.before_request
-    def handle_preflight():
-        if request.method == "OPTIONS":
-            response = make_response()
-            response.headers.add("Access-Control-Allow-Origin", ", ".join(origins))
-            response.headers.add(
-                "Access-Control-Allow-Headers", "Content-Type, Authorization"
-            )
-            response.headers.add(
-                "Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS"
-            )
-            response.headers.add("Access-Control-Allow-Credentials", "true")
-            return response
-
-    # Add JWT configuration to ignore OPTIONS requests
-    @jwt.request_loader
-    def load_user_from_request(request):
-        if request.method == "OPTIONS":
-            return None  # Skip JWT for OPTIONS requests
-        # ... your existing JWT logic
-
     # Register blueprints
     app.register_blueprint(_create_auth_blueprint(), url_prefix="/auth")
     app.register_blueprint(_create_work_entries_blueprint(), url_prefix="/entries")
