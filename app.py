@@ -505,12 +505,16 @@ def create_app(test_config=None):
         except Exception:
             pass  # Ignore if already exists or not needed
 
-    # Updated CORS configuration with proper regex
-    origins = [
-        r"http://localhost(:\d+)?",
-        r"https://bloomteq-fullstack-task.*\.vercel\.app",  # Fixed regex pattern
-        "https://bloomteq-fullstack-task.vercel.app",
-    ]
+    # Updated CORS configuration: get origins from environment variable
+    origins_env = os.getenv("CORS_ORIGINS")
+    if origins_env:
+        origins = [o.strip() for o in origins_env.split(",") if o.strip()]
+    else:
+        origins = [
+            r"http://localhost(:\d+)?",
+            r"https://bloomteq-fullstack-task.*\.vercel\.app",
+            "https://bloomteq-fullstack-task.vercel.app",
+        ]
 
     # Enable CORS with updated configuration
     CORS(
