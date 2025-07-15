@@ -36,7 +36,6 @@ const Dashboard: React.FC = () => {
   const [deleteConfirmAnchor, setDeleteConfirmAnchor] = useState<null | HTMLElement>(null);
   const [entryToDelete, setEntryToDelete] = useState<number | null>(null);
 
-  // Memoize the filter object to prevent infinite re-renders
   const memoizedFilter = useMemo(() => ({
     page,
     per_page: PAGE_SIZE,
@@ -44,7 +43,6 @@ const Dashboard: React.FC = () => {
     end_date: filter.end_date
   }), [page, filter.start_date, filter.end_date]);
 
-  // API hooks
   const { data: entries, loading, error, pagination, refetch } = useWorkEntries(
     token || '',
     memoizedFilter
@@ -76,7 +74,6 @@ const Dashboard: React.FC = () => {
   );
   const { data: stats, loading: statsLoading, refetch: refetchStats } = useStatistics(token || '');
 
-  // Add entry handler
   const handleAdd = () => {
     if (!form.date || !form.hours || !form.description) return;
     
@@ -88,7 +85,6 @@ const Dashboard: React.FC = () => {
     });
   };
 
-  // Edit entry handler
   const handleEdit = (entry: any) => {
     setEditingEntry(entry);
     setForm({
@@ -100,7 +96,6 @@ const Dashboard: React.FC = () => {
     setEditOpen(true);
   };
 
-  // Update entry handler
   const handleUpdate = () => {
     if (!editingEntry || !form.date || !form.hours || !form.description) return;
     
@@ -112,7 +107,6 @@ const Dashboard: React.FC = () => {
     });
   };
 
-  // Delete entry handler
   const handleDeleteClick = (event: React.MouseEvent<HTMLElement>, id: number) => {
     setDeleteConfirmAnchor(event.currentTarget);
     setEntryToDelete(id);
@@ -131,7 +125,6 @@ const Dashboard: React.FC = () => {
     setEntryToDelete(null);
   };
 
-  // Profile menu handlers
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setProfileAnchorEl(event.currentTarget);
   };
@@ -145,14 +138,12 @@ const Dashboard: React.FC = () => {
     logout();
   };
 
-  // Format hours for display
   const formatHours = (hours: number) => {
     const h = Math.floor(hours);
     const m = Math.round((hours - h) * 60);
     return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
   };
 
-  // Format date for display
   const formatDate = (dateStr: string) => {
     return dayjs(dateStr).format('DD/MM/YY');
   };
@@ -588,7 +579,6 @@ const Dashboard: React.FC = () => {
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
                   <TextField
                     label="Date"
-                    type="date"
                   value={form.date} 
                   onChange={e => setForm(f => ({ ...f, date: e.target.value }))} 
                   fullWidth 
@@ -597,7 +587,6 @@ const Dashboard: React.FC = () => {
                   />
                   <TextField
                     label="Hours"
-                    type="number"
                   value={form.hours} 
                   onChange={e => setForm(f => ({ ...f, hours: e.target.value }))} 
                   fullWidth 

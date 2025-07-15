@@ -21,8 +21,6 @@ def setup_database():
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cursor = conn.cursor()
 
-        print("Connected to Neon database successfully!")
-
         # Create users table
         cursor.execute(
             """
@@ -61,23 +59,16 @@ def setup_database():
         )
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);")
 
-        print("Database tables created successfully!")
-        print("✅ Users table")
-        print("✅ Work entries table")
-        print("✅ Indexes created")
-
         cursor.close()
         conn.close()
 
     except Exception as e:
-        print(f"Error setting up database: {e}")
         return False
 
     return True
 
 
 if __name__ == "__main__":
-    print("Setting up Neon PostgreSQL database...")
     success = setup_database()
     if success:
         print("\n🎉 Database setup completed successfully!")

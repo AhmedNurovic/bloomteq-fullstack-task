@@ -523,7 +523,6 @@ def create_app(test_config=None):
             "http://127.0.0.1:3000",
             re.compile(r"https://(?:.*\.)?vercel\.app"),
         ]
-    print("CORS allowed origins:", origins)
     CORS(
         app,
         origins=origins,
