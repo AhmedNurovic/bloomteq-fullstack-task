@@ -511,9 +511,8 @@ def create_app(test_config=None):
         origins = [o.strip() for o in origins_env.split(",") if o.strip()]
     else:
         origins = [
-            r"http://localhost(:\d+)?",
-            r"https://bloomteq-fullstack-task.*\.vercel\.app",
-            "https://bloomteq-fullstack-task.vercel.app",
+            r"https://bloomteq-fullstack-task(?:-[a-z0-9]+)?\.vercel\.app",
+            "http://localhost:3000",
         ]
 
     # Enable CORS with updated configuration
@@ -521,8 +520,9 @@ def create_app(test_config=None):
         app,
         origins=origins,
         supports_credentials=True,
-        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # Explicitly allow OPTIONS
-        allow_headers=["Content-Type", "Authorization"],  # Explicitly allow headers
+        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        allow_headers=["Content-Type", "Authorization"],
+        max_age=86400,
     )
 
     # Register blueprints
