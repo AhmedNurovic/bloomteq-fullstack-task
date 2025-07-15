@@ -1,94 +1,69 @@
 # React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a modern React + TypeScript frontend built with Vite, using MUI, TailwindCSS, and best practices for scalable development.
 
-Currently, two official plugins are available:
+## Features
+- Modern React (v19) with TypeScript
+- MUI and TailwindCSS for UI
+- API integration via Axios
+- Jest and Testing Library for unit tests
+- ESLint and Prettier for code quality
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Project Structure
+```
+src/
+  assets/         # SVGs and images
+  components/     # React components
+  config/         # API and environment config
+  contexts/       # React context providers
+  hooks/          # Custom React hooks
+  App.tsx         # Main app component
+  main.tsx        # Entry point
+  theme.ts        # MUI theme
+  index.css       # Tailwind base styles
+  vite-env.d.ts   # Vite type definitions
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Deployment (Vercel)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Prerequisites
+1. Complete backend deployment first
+2. Get your backend URL (e.g., https://your-project-name.vercel.app)
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### Steps
+1. **Update API URL**:
+   - Open `src/config/viteEnv.ts`
+   - Replace the placeholder backend URL with your actual backend URL
 
-## Deployment to GitHub Pages
-
-This project is configured for deployment to GitHub Pages using the `gh-pages` package.
-
-### Steps to Deploy
-
-1. Make sure your `homepage` in `package.json` is set to:
-   ```json
-   "homepage": "https://AhmedNurovic.github.io/bloomteq-fullstack-task/"
+2. **Build the frontend**:
+   ```bash
+   npm run build
    ```
-2. The Vite config (`vite.config.ts`) sets the base path for GitHub Pages:
-   ```js
-   base: '/bloomteq-fullstack-task/',
-   ```
-3. To deploy, run:
-   ```sh
-   npm run deploy
-   ```
-   This will build the app and publish the `dist` folder to the `gh-pages` branch.
 
-4. In your GitHub repository settings, set GitHub Pages to deploy from the `gh-pages` branch (root).
+3. **Deploy to Vercel**:
+   ```bash
+   vercel --prod
+   ```
+   - Choose to deploy to a new project if prompted
+   - Set project name (e.g., "work-tracker-frontend")
+   - Deploy
 
-After a few minutes, your site will be live at:
-https://AhmedNurovic.github.io/bloomteq-fullstack-task/
+### Environment Variables
+The frontend will automatically use the production API URL when deployed to Vercel. No additional environment variables are required for the frontend.
+
+## Development
+- `npm run dev` — Start local dev server
+- `npm run build` — Build for production
+- `npm run test` — Run unit tests
+- `npm run lint` — Lint code
+
+## Testing
+- Jest and Testing Library are set up for unit testing React components.
+- Mocks for SVGs and environment config are provided in `__mocks__/` for Jest.
+
+## Linting & Formatting
+- ESLint and Prettier are configured for code quality and consistency.
+
+---
+
+For backend setup and API documentation, see the root README.
