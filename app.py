@@ -3,7 +3,7 @@ import re
 from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
-from flask import Blueprint, Flask, jsonify, request
+from flask import Blueprint, Flask, jsonify, make_response, request
 from flask_cors import CORS
 from flask_jwt_extended import (
     JWTManager,
@@ -505,26 +505,43 @@ def create_app(test_config=None):
         except Exception:
             pass  # Ignore if already exists or not needed
 
-    # Enable CORS for frontend (dev and prod, including Vercel previews)
+    # Updated CORS configuration with proper regex
     origins = [
-        r"http://localhost(:\\d+)?",
-        r"https://bloomteq-fullstack-task-.*\\.vercel\\.app",
+        r"http://localhost(:\d+)?",
+        r"https://bloomteq-fullstack-task.*\.vercel\.app",  # Fixed regex pattern
         "https://bloomteq-fullstack-task.vercel.app",
     ]
+
+    # Enable CORS with updated configuration
     CORS(
         app,
         origins=origins,
         supports_credentials=True,
+        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # Explicitly allow OPTIONS
+        allow_headers=["Content-Type", "Authorization"],  # Explicitly allow headers
     )
 
-    # Temporary: Log CORS validation for debugging
+    # Add explicit OPTIONS handler for all routes
     @app.before_request
-    def log_cors_validation():
-        origin = request.headers.get("Origin")
-        if origin:
-            print(
-                f"Origin: {origin} - Allowed: {any(re.match(pattern, origin) for pattern in origins)}"
+    def handle_preflight():
+        if request.method == "OPTIONS":
+            response = make_response()
+            response.headers.add("Access-Control-Allow-Origin", ", ".join(origins))
+            response.headers.add(
+                "Access-Control-Allow-Headers", "Content-Type, Authorization"
             )
+            response.headers.add(
+                "Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS"
+            )
+            response.headers.add("Access-Control-Allow-Credentials", "true")
+            return response
+
+    # Add JWT configuration to ignore OPTIONS requests
+    @jwt.request_loader
+    def load_user_from_request(request):
+        if request.method == "OPTIONS":
+            return None  # Skip JWT for OPTIONS requests
+        # ... your existing JWT logic
 
     # Register blueprints
     app.register_blueprint(_create_auth_blueprint(), url_prefix="/auth")
