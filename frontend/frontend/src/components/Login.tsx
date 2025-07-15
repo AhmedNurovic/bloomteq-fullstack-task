@@ -66,8 +66,8 @@ const Login: React.FC = () => {
           overflow: 'hidden',
         }}
       >
-        {/* Logo at top left, always */}
-        <Box sx={{ position: 'absolute', top: 16, left: 16, zIndex: 10, color: 'white', fontSize: { xs: 18, md: 24 } }}>
+        {/* Logo at top left, only on mobile */}
+        <Box sx={{ position: 'absolute', top: 16, left: 16, zIndex: 10, color: 'white', fontSize: { xs: 18, md: 24 }, display: { xs: 'block', md: 'none' } }}>
           <h1 style={{ fontSize: 'inherit', margin: 0 }}>LOGO</h1>
         </Box>
         {/* Decorative dots, now at right: 25% of the blue div's width */}

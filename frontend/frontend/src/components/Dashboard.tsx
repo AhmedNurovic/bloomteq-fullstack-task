@@ -209,7 +209,7 @@ const Dashboard: React.FC = () => {
               >
                 Add new work
               </Button>
-              <Button variant="outlined" startIcon={<FilterList />} onClick={() => setFilterOpen(true)}>
+              <Button variant="outlined" startIcon={<FilterList />} onClick={() => setFilterOpen(true)} sx={{ borderColor: '#096DD9', color: '#096DD9', '&:hover': { borderColor: '#0756B3', color: '#0756B3' } }}>
                 Filter
               </Button>
             </Box>
@@ -310,9 +310,9 @@ const Dashboard: React.FC = () => {
                   variant="contained"
                   disabled={deleteLoading}
                     sx={{
-                    backgroundColor: '#d32f2f',
+                    backgroundColor: '#096DD9',
                     '&:hover': {
-                      backgroundColor: '#b71c1c',
+                      backgroundColor: '#0756B3',
                     },
                     '&:disabled': {
                       backgroundColor: '#ffcdd2',
@@ -379,9 +379,9 @@ const Dashboard: React.FC = () => {
                       <TableCell sx={{ fontWeight: 700, color: '#096DD9' }}>Date</TableCell>
                       <TableCell sx={{ fontWeight: 700, color: '#096DD9' }}>Hours (h/min)</TableCell>
                       <TableCell sx={{ fontWeight: 700, color: '#096DD9' }}>Description</TableCell>
-                      <TableCell sx={{ fontWeight: 700, color: '#096DD9' }}>Completed</TableCell>
                       <TableCell sx={{ fontWeight: 700, color: '#096DD9' }}>Created</TableCell>
                       <TableCell sx={{ fontWeight: 700, color: '#096DD9' }}>Updated</TableCell>
+                      <TableCell sx={{ fontWeight: 700, color: '#096DD9' }}>Completed</TableCell>
                       <TableCell align="center" sx={{ fontWeight: 700, color: '#096DD9' }}>Actions</TableCell>
                     </TableRow>
                   </TableHead>
@@ -404,21 +404,15 @@ const Dashboard: React.FC = () => {
                           <TableCell>{formatDate(entry.date)}</TableCell>
                           <TableCell>{formatHours(entry.hours)}</TableCell>
                           <TableCell>{entry.description}</TableCell>
+                          <TableCell>{formatDate(entry.created_at)}</TableCell>
+                          <TableCell>{formatDate(entry.updated_at)}</TableCell>
                           <TableCell>
                             <Checkbox
                               checked={entry.completed}
                               onChange={(e) => updateEntry(entry.id, { completed: e.target.checked })}
-                              disabled={updateLoading}
-                              sx={{ 
-                                color: '#096DD9',
-                                '&.Mui-checked': {
-                                  color: '#096DD9',
-                                },
-                              }}
+                              color="primary"
                             />
                           </TableCell>
-                          <TableCell>{formatDate(entry.created_at)}</TableCell>
-                          <TableCell>{formatDate(entry.updated_at)}</TableCell>
                           <TableCell align="center">
                             <IconButton 
                               size="small" 
@@ -550,7 +544,7 @@ const Dashboard: React.FC = () => {
               </Box>
             </DialogContent>
             <DialogActions>
-              <Button onClick={() => setOpen(false)}>Cancel</Button>
+              <Button onClick={() => setOpen(false)} sx={{ color: '#096DD9' }}>Cancel</Button>
               <Button
                 onClick={handleAdd} 
                 variant="contained"
