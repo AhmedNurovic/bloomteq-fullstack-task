@@ -357,40 +357,40 @@ const Dashboard: React.FC = () => {
             flexWrap: isMobile ? 'nowrap' : 'wrap',
             flexDirection: isMobile ? 'column' : 'row',
           }}>
-            <Card sx={{ flex: 1, minWidth: 220, boxShadow: 0, border: '1.5px solid #F0F0F0' }}>
+            <Card sx={{ flex: 1, minWidth: 220, boxShadow: '0 4px 16px 0 rgba(9,109,217,0.08)', border: '1.5px solid #F0F0F0', '&:hover': { boxShadow: '0 4px 16px 0 rgba(9,109,217,0.08)' }, '&:focus': { boxShadow: '0 4px 16px 0 rgba(9,109,217,0.08)' } }}>
               <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Box sx={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'rgba(9,109,217,0.08)', borderRadius: '50%' }}>
-                  <img src={TimeLoggedIcon} alt="Time logged" style={{ width: '100%', height: '100%', filter: 'invert(27%) sepia(97%) saturate(749%) hue-rotate(191deg) brightness(92%) contrast(101%)' }} />
+                <Box sx={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <img src={TimeLoggedIcon} alt="Time logged" style={{ width: '100%', height: '100%', color: '#096DD9' }} />
                 </Box>
                 <Box>
-                  <Typography fontWeight={500} color="text.secondary" fontSize={16}>Today's Logged Hours</Typography>
+                  <Typography fontWeight={500} color="black" fontSize={16}>Today's Logged Hours</Typography>
                   <Typography fontWeight={700} color="#096DD9" fontSize={22}>
                     {statsLoading ? '...' : `${formatHours(stats?.today_hours || 0)}h`}
                   </Typography>
                 </Box>
               </CardContent>
             </Card>
-            <Card sx={{ flex: 1, minWidth: 220, boxShadow: 0, border: '1.5px solid #F0F0F0' }}>
+            <Card sx={{ flex: 1, minWidth: 220, boxShadow: '0 4px 16px 0 rgba(196,29,127,0.08)', border: '1.5px solid #F0F0F0', '&:hover': { boxShadow: '0 4px 16px 0 rgba(196,29,127,0.08)' }, '&:focus': { boxShadow: '0 4px 16px 0 rgba(196,29,127,0.08)' } }}>
               <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Box sx={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'rgba(9,109,217,0.08)', borderRadius: '50%' }}>
-                  <img src={HoursWorkedIcon} alt="Hours worked" style={{ width: '100%', height: '100%', filter: 'invert(27%) sepia(97%) saturate(749%) hue-rotate(191deg) brightness(92%) contrast(101%)' }} />
+                <Box sx={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <img src={HoursWorkedIcon} alt="Hours worked" style={{ width: '100%', height: '100%', color: '#C41D7F' }} />
                 </Box>
                 <Box>
-                  <Typography fontWeight={500} color="text.secondary" fontSize={16}>Hours worked - Last week</Typography>
-                  <Typography fontWeight={700} color="#096DD9" fontSize={22}>
+                  <Typography fontWeight={500} color="black" fontSize={16}>Hours worked - Last week</Typography>
+                  <Typography fontWeight={700} color="#C41D7F" fontSize={22}>
                     {statsLoading ? '...' : `${formatHours(stats?.last_week_hours || 0)}h`}
                   </Typography>
                 </Box>
               </CardContent>
             </Card>
-            <Card sx={{ flex: 1, minWidth: 220, boxShadow: 0, border: '1.5px solid #F0F0F0' }}>
+            <Card sx={{ flex: 1, minWidth: 220, boxShadow: '0 4px 16px 0 rgba(8,151,156,0.08)', border: '1.5px solid #F0F0F0', '&:hover': { boxShadow: '0 4px 16px 0 rgba(8,151,156,0.08)' }, '&:focus': { boxShadow: '0 4px 16px 0 rgba(8,151,156,0.08)' } }}>
               <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Box sx={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'rgba(27,196,125,0.08)', borderRadius: '50%' }}>
-                  <img src={TaskCompletedIcon} alt="Tasks completed" style={{ width: '100%', height: '100%', filter: 'invert(56%) sepia(77%) saturate(464%) hue-rotate(97deg) brightness(92%) contrast(101%)' }} />
+                <Box sx={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <img src={TaskCompletedIcon} alt="Tasks completed" style={{ width: '100%', height: '100%', color: '#08979C' }} />
                 </Box>
                 <Box>
-                  <Typography fontWeight={500} color="text.secondary" fontSize={16}>Tasks Completed - Last week</Typography>
-                  <Typography fontWeight={700} color="#1BC47D" fontSize={22}>
+                  <Typography fontWeight={500} color="black" fontSize={16}>Tasks Completed - Last week</Typography>
+                  <Typography fontWeight={700} color="#08979C" fontSize={22}>
                     {statsLoading ? '...' : stats?.last_week_tasks || 0}
                   </Typography>
                 </Box>
@@ -430,10 +430,10 @@ const Dashboard: React.FC = () => {
                         />
                         <Typography fontSize={14}>Completed</Typography>
                         <IconButton size="small" onClick={() => handleEdit(entry)} disabled={deleteLoading} sx={{ color: '#096DD9' }}>
-                          <img src={EditIcon} alt="Edit" style={{ width: 20, height: 20 }} />
+                          <img src={EditIcon} alt="Edit" style={{ width: 22, height: 22 }} />
                         </IconButton>
                         <IconButton size="small" onClick={(e) => handleDeleteClick(e, entry.id)} disabled={deleteLoading} sx={{ color: '#d32f2f' }}>
-                          <img src={DeleteIcon} alt="Delete" style={{ width: 20, height: 20 }} />
+                          <img src={DeleteIcon} alt="Delete" style={{ width: 22, height: 22 }} />
                         </IconButton>
                       </Box>
                     </Box>
@@ -442,43 +442,43 @@ const Dashboard: React.FC = () => {
               )}
             </Box>
           ) : (
-            <Card sx={{ boxShadow: 0, border: '1.5px solid #F0F0F0', overflowX: 'auto' }}>
+            <Card sx={{ boxShadow: 0, border: '1.5px solid #F0F0F0', overflowX: 'auto', '&:hover': { boxShadow: 0, backgroundColor: 'inherit' }, '&:focus': { boxShadow: 0, backgroundColor: 'inherit' } }}>
               <CardContent sx={{ p: 0 }}>
-                <TableContainer sx={{ minWidth: 800 }}>
+                <TableContainer sx={{ minWidth: 800, '&:hover': { boxShadow: 'none', backgroundColor: 'inherit' }, '&:focus': { boxShadow: 'none', backgroundColor: 'inherit' } }}>
                   <Table>
                     <TableHead>
-                      <TableRow>
+                      <TableRow sx={{ '&:hover': { boxShadow: 'none', backgroundColor: 'inherit' }, '&:focus': { boxShadow: 'none', backgroundColor: 'inherit' } }}>
                         <TableCell sx={{ fontWeight: 700, color: '#096DD9' }}>Date</TableCell>
                         <TableCell sx={{ fontWeight: 700, color: '#096DD9' }}>Hours (h/min)</TableCell>
                         <TableCell sx={{ fontWeight: 700, color: '#096DD9' }}>Description</TableCell>
                         <TableCell sx={{ fontWeight: 700, color: '#096DD9' }}>Created</TableCell>
                         <TableCell sx={{ fontWeight: 700, color: '#096DD9' }}>Updated</TableCell>
-                        <TableCell sx={{ fontWeight: 700, color: '#096DD9' }}>Completed</TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 700, color: '#096DD9' }}>Completed</TableCell>
                         <TableCell align="center" sx={{ fontWeight: 700, color: '#096DD9' }}>Actions</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {loading ? (
-                        <TableRow>
+                        <TableRow sx={{ '&:hover': { boxShadow: 'none', backgroundColor: 'inherit' }, '&:focus': { boxShadow: 'none', backgroundColor: 'inherit' } }}>
                           <TableCell colSpan={7} align="center">
                             <CircularProgress size={32} />
                           </TableCell>
                         </TableRow>
                       ) : entries.length === 0 ? (
-                        <TableRow>
+                        <TableRow sx={{ '&:hover': { boxShadow: 'none', backgroundColor: 'inherit' }, '&:focus': { boxShadow: 'none', backgroundColor: 'inherit' } }}>
                           <TableCell colSpan={7} align="center">
                             <Typography color="text.secondary">No entries found.</Typography>
                           </TableCell>
                         </TableRow>
                       ) : (
                         entries.map(entry => (
-                          <TableRow key={entry.id}>
+                          <TableRow key={entry.id} sx={{ '&:hover': { boxShadow: 'none', backgroundColor: 'inherit' }, '&:focus': { boxShadow: 'none', backgroundColor: 'inherit' }, backgroundColor: '#F9FAFC' }}>
                             <TableCell>{formatDate(entry.date)}</TableCell>
                             <TableCell>{formatHours(entry.hours)}</TableCell>
                             <TableCell>{entry.description}</TableCell>
                             <TableCell>{formatDate(entry.created_at)}</TableCell>
                             <TableCell>{formatDate(entry.updated_at)}</TableCell>
-                            <TableCell>
+                            <TableCell align="center">
                               <Checkbox
                                 checked={entry.completed}
                                 onChange={(e) => updateEntry(entry.id, { completed: e.target.checked })}
@@ -496,27 +496,30 @@ const Dashboard: React.FC = () => {
                                 size="small" 
                                 onClick={() => handleEdit(entry)}
                                 disabled={deleteLoading}
-                sx={{
+                                sx={{
                                   color: '#096DD9',
-                  '&:hover': {
-                                  backgroundColor: 'rgba(9, 109, 217, 0.04)',
-                  },
-                }}
-            >
-                                <img src={EditIcon} alt="Edit" style={{ width: 20, height: 20 }} />
+                                  mr: 2, // wider separation
+                                  backgroundColor: 'transparent',
+                                  boxShadow: 'none',
+                                  '&:hover': { backgroundColor: 'transparent', boxShadow: 'none' },
+                                  '&:active': { backgroundColor: 'transparent', boxShadow: 'none' },
+                                }}
+                              >
+                                <img src={EditIcon} alt="Edit" style={{ width: 22, height: 22 }} />
                               </IconButton>
                               <IconButton 
                                 size="small" 
                                 onClick={(e) => handleDeleteClick(e, entry.id)}
                                 disabled={deleteLoading}
-                                sx={{ 
+                                sx={{
                                   color: '#d32f2f',
-                                  '&:hover': {
-                                    backgroundColor: 'rgba(211, 47, 47, 0.04)',
-                                  },
+                                  backgroundColor: 'transparent',
+                                  boxShadow: 'none',
+                                  '&:hover': { backgroundColor: 'transparent', boxShadow: 'none' },
+                                  '&:active': { backgroundColor: 'transparent', boxShadow: 'none' },
                                 }}
                               >
-                                <img src={DeleteIcon} alt="Delete" style={{ width: 20, height: 20 }} />
+                                <img src={DeleteIcon} alt="Delete" style={{ width: 22, height: 22 }} />
                               </IconButton>
                             </TableCell>
                           </TableRow>
@@ -718,6 +721,24 @@ const Dashboard: React.FC = () => {
                   onChange={e => setFilter(f => ({ ...f, start_date: e.target.value }))} 
                   fullWidth 
                   InputLabelProps={{ shrink: true }}
+                  sx={{
+                    '& .MuiInputBase-root': {
+                      color: '#096DD9',
+                      borderColor: '#096DD9',
+                    },
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#096DD9',
+                    },
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#0756B3',
+                    },
+                    '& .MuiInputLabel-root': {
+                      color: '#096DD9',
+                    },
+                    '& .MuiInputLabel-root.Mui-focused': {
+                      color: '#096DD9',
+                    },
+                  }}
                 />
                 <TextField 
                   label="End Date" 
@@ -726,11 +747,29 @@ const Dashboard: React.FC = () => {
                   onChange={e => setFilter(f => ({ ...f, end_date: e.target.value }))} 
                   fullWidth 
                   InputLabelProps={{ shrink: true }}
+                  sx={{
+                    '& .MuiInputBase-root': {
+                      color: '#096DD9',
+                      borderColor: '#096DD9',
+                    },
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#096DD9',
+                    },
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#0756B3',
+                    },
+                    '& .MuiInputLabel-root': {
+                      color: '#096DD9',
+                    },
+                    '& .MuiInputLabel-root.Mui-focused': {
+                      color: '#096DD9',
+                    },
+                  }}
                 />
               </Box>
             </DialogContent>
             <DialogActions>
-              <Button onClick={() => setFilterOpen(false)}>Close</Button>
+              <Button onClick={() => setFilterOpen(false)} sx={{ color: '#096DD9', borderColor: '#096DD9', borderWidth: 1, borderStyle: 'solid', background: 'none', '&:hover': { color: '#0756B3', borderColor: '#0756B3', background: 'none' } }}>Close</Button>
               <Button 
                 variant="contained" 
                 onClick={() => {
