@@ -13,10 +13,7 @@ module.exports = {
     '<rootDir>/src/**/*.test.ts',
     '<rootDir>/src/**/*.test.tsx'
   ],
-  extensionsToTreatAsEsm: ['.ts', '.tsx'],
-  globals: {
-    'ts-jest': {
-      useESM: true,
-    },
-  },
+  transformIgnorePatterns: [
+    'node_modules/(?!(@testing-library|react|react-dom)/)'
+  ],
 }; 
