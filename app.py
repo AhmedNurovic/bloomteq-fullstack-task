@@ -469,21 +469,11 @@ def _create_work_entries_blueprint():
 def create_app(test_config=None):
     app = Flask(__name__)
 
-    # Detect if running on Vercel (serverless)
-    on_vercel = (
-        os.environ.get("VERCEL")
-        or os.environ.get("VERCEL_ENV")
-        or os.environ.get("AWS_LAMBDA_FUNCTION_NAME")
-    )
-
-    # Use Neon Postgres for production (Vercel), SQLite for local/dev
-    if on_vercel:
-        db_uri = os.getenv("DATABASE_URL")
-        if not db_uri:
-            # Fallback: use /tmp/app.db for SQLite if DATABASE_URL is not set (should not happen in prod)
-            db_uri = "sqlite:////tmp/app.db"
-        app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
+    # Use test config if passed in (for tests)
+    if test_config:
+        app.config.update(test_config)
     else:
+        # Use DATABASE_URL from environment, fallback to SQLite for local/dev
         app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
             "DATABASE_URL", "sqlite:///instance/app.db"
         )
@@ -492,18 +482,14 @@ def create_app(test_config=None):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "jwt-secret-key")
 
-    if test_config:
-        app.config.update(test_config)
-
     db.init_app(app)
     jwt.init_app(app)
 
-    # Only create instance dir if not on Vercel and path is writable
-    if not on_vercel:
-        try:
-            os.makedirs(app.instance_path, exist_ok=True)
-        except Exception:
-            pass  # Ignore if already exists or not needed
+    # Create instance dir if needed
+    try:
+        os.makedirs(app.instance_path, exist_ok=True)
+    except Exception:
+        pass
 
     # Robust Flask-CORS only setup (no manual preflight handler)
     origins = [
@@ -546,9 +532,3 @@ def create_app(test_config=None):
 if __name__ == "__main__":
     app = create_app()
     app.run(debug=True)
-
-# Vercel serverless handler
-app = create_app()
-
-# Export the Flask app for Vercel
-handler = app
