@@ -42,7 +42,7 @@ class User(db.Model):
         return {
             "id": self.id,
             "email": self.email,
-            "created_at": (self.created_at.isoformat() if self.created_at else None),
+            "created_at": self.created_at.isoformat() if self.created_at else None,
         }
 
 

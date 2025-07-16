@@ -6,17 +6,15 @@ Run this script to initialize your production database
 
 import os
 
+import psycopg2
 from dotenv import load_dotenv
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 load_dotenv()  # Loads .env if present
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 if not DATABASE_URL:
     raise RuntimeError("DATABASE_URL environment variable not set")
-
-
-import psycopg2
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 
 def setup_database():
