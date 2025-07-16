@@ -17,4 +17,9 @@ module.exports = {
     'node_modules/(?!(@testing-library|react|react-dom)/)'
   ],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
+  moduleDirectories: [
+    "node_modules",
+    "<rootDir>/node_modules",
+    "<rootDir>/../node_modules"
+  ],
 }; 
