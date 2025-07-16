@@ -63,7 +63,8 @@ def test_register_duplicate_user(client):
 
 def test_register_invalid_email(client):
     response = client.post(
-        "/api/auth/register", json={"email": "invalidemail", "password": "password123"}
+        "/api/auth/register",
+        json={"email": "invalidemail", "password": "password123"},
     )
     assert response.status_code == 400
     assert b"Invalid email format" in response.data
@@ -71,7 +72,8 @@ def test_register_invalid_email(client):
 
 def test_register_short_password(client):
     response = client.post(
-        "/api/auth/register", json={"email": "test2@example.com", "password": "short"}
+        "/api/auth/register",
+        json={"email": "test2@example.com", "password": "short"},
     )
     assert response.status_code == 400
     assert b"Password must be at least 8 characters long" in response.data
@@ -87,7 +89,8 @@ def test_login_user(client):
 
     # Login
     response = client.post(
-        "/api/auth/login", json={"email": "test@example.com", "password": "password123"}
+        "/api/auth/login",
+        json={"email": "test@example.com", "password": "password123"},
     )
     assert response.status_code == 200
     data = json.loads(response.data)
@@ -111,7 +114,8 @@ def test_login_invalid_email_format(client):
     )
     # Try to login with invalid email format
     response = client.post(
-        "/api/auth/login", json={"email": "invalidemail", "password": "password123"}
+        "/api/auth/login",
+        json={"email": "invalidemail", "password": "password123"},
     )
     assert response.status_code == 400
     assert b"Invalid email format" in response.data
@@ -125,7 +129,8 @@ def test_login_short_password(client):
     )
     # Try to login with short password
     response = client.post(
-        "/api/auth/login", json={"email": "test4@example.com", "password": "short"}
+        "/api/auth/login",
+        json={"email": "test4@example.com", "password": "short"},
     )
     assert response.status_code == 400
     assert b"Password must be at least 8 characters long" in response.data
@@ -261,7 +266,8 @@ def test_get_work_entries_with_date_filters(client):
 
     # Test date range filter
     response = client.get(
-        "/api/entries/?start_date=2023-01-01&end_date=2023-01-31", headers=headers
+        "/api/entries/?start_date=2023-01-01&end_date=2023-01-31",
+        headers=headers,
     )
     assert response.status_code == 200
     data = response.json

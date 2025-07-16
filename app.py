@@ -42,7 +42,7 @@ class User(db.Model):
         return {
             "id": self.id,
             "email": self.email,
-            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "created_at": (self.created_at.isoformat() if self.created_at else None),
         }
 
 
@@ -67,8 +67,8 @@ class WorkEntry(db.Model):
             "hours": self.hours,
             "description": self.description,
             "completed": self.completed,
-            "created_at": self.created_at.isoformat() if self.created_at else None,
-            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
+            "created_at": (self.created_at.isoformat() if self.created_at else None),
+            "updated_at": (self.updated_at.isoformat() if self.updated_at else None),
         }
 
 
@@ -525,7 +525,10 @@ def create_app(test_config=None):
     # Bloomteq Easter Egg
     @app.route("/bloom")
     def bloomteq_easter_egg():
-        return "\U0001F338 Hello Bloomteq! You found the secret garden. \U0001F338", 200
+        return (
+            "\U0001F338 Hello Bloomteq! You found the secret " "garden. \U0001F338",
+            200,
+        )
 
     # Create database tables
     with app.app_context():

@@ -58,12 +58,13 @@ def setup_database():
 
         # Create indexes for better performance
         cursor.execute(
-            "CREATE INDEX IF NOT EXISTS idx_work_entries_user_id ON work_entries(user_id);"
+            "CREATE INDEX IF NOT EXISTS idx_work_entries_user_id "
+            "ON work_entries(user_id);"
         )
         cursor.execute(
-            "CREATE INDEX IF NOT EXISTS idx_work_entries_date ON work_entries(date);"
+            "CREATE INDEX IF NOT EXISTS idx_work_entries_date " "ON work_entries(date);"
         )
-        cursor.execute("CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_users_email " "ON users(email);")
 
         cursor.close()
         conn.close()
