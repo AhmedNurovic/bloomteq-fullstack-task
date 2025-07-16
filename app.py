@@ -526,7 +526,7 @@ def create_app(test_config=None):
     @app.route("/bloom")
     def bloomteq_easter_egg():
         return (
-            "\U0001F338 Hello Bloomteq! You found the secret " "garden. \U0001F338",
+            "\U0001f338 Hello Bloomteq! You found the secret " "garden. \U0001f338",
             200,
         )
 
