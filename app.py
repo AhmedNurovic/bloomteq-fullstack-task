@@ -522,6 +522,11 @@ def create_app(test_config=None):
             db_status = "error"
         return jsonify({"status": "ok", "db": db_status}), 200
 
+    # Bloomteq Easter Egg
+    @app.route("/bloom")
+    def bloomteq_easter_egg():
+        return "\U0001F338 Hello Bloomteq! You found the secret garden. \U0001F338", 200
+
     # Create database tables
     with app.app_context():
         db.create_all()
