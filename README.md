@@ -1,12 +1,12 @@
 # Flask Work Tracker API
 
-A Flask application with PostgreSQL database, JWT authentication, and work entry management.
+A Flask application with PostgreSQL (Neon) database, JWT authentication, and work entry management.
 
 ## Features
 
 - **User Authentication**: JWT-based authentication with register/login endpoints
 - **Work Entry Management**: CRUD operations for work entries (date, hours, description)
-- **PostgreSQL Database**: Robust database with proper relationships
+- **PostgreSQL Database**: Robust database with proper relationships (Neon recommended for production)
 - **Blueprint Architecture**: Modular code organization with auth and work_entries blueprints
 - **Environment Configuration**: Secure configuration management with .env files
 
@@ -14,8 +14,7 @@ A Flask application with PostgreSQL database, JWT authentication, and work entry
 
 ```
 bloomteq-fullstack-task/
-├── app.py                 # Main Flask application
-├── models.py              # Database models (User, WorkEntry)
+├── app.py                 # Main Flask application (contains models)
 ├── requirements.txt       # Python dependencies
 ├── env.example           # Environment variables template
 ├── auth/                 # Authentication blueprint
@@ -36,16 +35,15 @@ pip install -r requirements.txt
 
 ### 2. Database Setup
 
-#### Option A: PostgreSQL (Recommended)
-1. Install PostgreSQL on your system
-2. Create a database named `work_tracker`
-3. Update the `DATABASE_URL` in your `.env` file:
+#### Option A: Neon/PostgreSQL (Recommended for Production)
+1. Create a Neon Postgres database (or use any Postgres instance)
+2. Update the `DATABASE_URL` in your `.env` file:
    ```
-   DATABASE_URL=postgresql://username:password@localhost:5432/work_tracker
+   DATABASE_URL=postgresql://username:password@host:port/dbname
    ```
 
-#### Option B: SQLite (Development)
-The application will automatically use SQLite if no PostgreSQL connection is configured.
+#### Option B: SQLite (Development/Testing)
+If `DATABASE_URL` is not set, the application will use SQLite for local development or testing.
 
 ### 3. Environment Configuration
 
@@ -59,7 +57,7 @@ The application will automatically use SQLite if no PostgreSQL connection is con
    FLASK_APP=app.py
    FLASK_ENV=development
    SECRET_KEY=your-secret-key-change-this-in-production
-   DATABASE_URL=postgresql://username:password@localhost:5432/work_tracker
+   DATABASE_URL=postgresql://username:password@host:port/dbname
    JWT_SECRET_KEY=your-jwt-secret-key-change-this-in-production
    ```
 
@@ -73,48 +71,50 @@ The application will run on `http://localhost:5000`
 
 ## API Endpoints
 
+**All endpoints are prefixed with `/api`.**
+
 ### Authentication
 
 #### Register User
-- **POST** `/auth/register`
+- **POST** `/api/auth/register`
 - **Body**: `{"email": "user@example.com", "password": "password123"}`
 - **Response**: JWT token and user data
 
 #### Login
-- **POST** `/auth/login`
+- **POST** `/api/auth/login`
 - **Body**: `{"email": "user@example.com", "password": "password123"}`
 - **Response**: JWT token and user data
 
 #### Get Profile
-- **GET** `/auth/profile`
+- **GET** `/api/auth/profile`
 - **Headers**: `Authorization: Bearer <jwt_token>`
 - **Response**: User profile data
 
 ### Work Entries
 
 #### Get All Work Entries
-- **GET** `/work-entries/`
+- **GET** `/api/entries/`
 - **Headers**: `Authorization: Bearer <jwt_token>`
 - **Query Parameters**: 
   - `start_date` (optional): Filter from date (YYYY-MM-DD)
   - `end_date` (optional): Filter to date (YYYY-MM-DD)
 
 #### Get Single Work Entry
-- **GET** `/work-entries/<entry_id>`
+- **GET** `/api/entries/<entry_id>`
 - **Headers**: `Authorization: Bearer <jwt_token>`
 
 #### Create Work Entry
-- **POST** `/work-entries/`
+- **POST** `/api/entries/`
 - **Headers**: `Authorization: Bearer <jwt_token>`
 - **Body**: `{"date": "2024-01-15", "hours": 8.5, "description": "Work description"}`
 
 #### Update Work Entry
-- **PUT** `/work-entries/<entry_id>`
+- **PUT** `/api/entries/<entry_id>`
 - **Headers**: `Authorization: Bearer <jwt_token>`
 - **Body**: `{"date": "2024-01-15", "hours": 8.5, "description": "Updated description"}`
 
 #### Delete Work Entry
-- **DELETE** `/work-entries/<entry_id>`
+- **DELETE** `/api/entries/<entry_id>`
 - **Headers**: `Authorization: Bearer <jwt_token>`
 
 ## Database Models
@@ -148,8 +148,9 @@ The application uses Flask's application factory pattern for better testing and 
 
 ## Testing
 
-### Unit Tests
-Run the test suite:
+### Unit Tests (Backend)
+By default, tests use in-memory SQLite for speed and isolation. To test against Neon/Postgres, set `DATABASE_URL` in your environment or test config.
+
 ```bash
 python -m pytest tests/ -v --tb=short
 ```
@@ -164,17 +165,17 @@ Example curl commands:
 
 ```bash
 # Register a user
-curl -X POST http://localhost:5000/auth/register \
+curl -X POST http://localhost:5000/api/auth/register \
   -H "Content-Type: application/json" \
   -d '{"email": "test@example.com", "password": "password123"}'
 
 # Login
-curl -X POST http://localhost:5000/auth/login \
+curl -X POST http://localhost:5000/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email": "test@example.com", "password": "password123"}'
 
 # Create work entry (use token from login response)
-curl -X POST http://localhost:5000/work-entries/ \
+curl -X POST http://localhost:5000/api/entries/ \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <your_jwt_token>" \
   -d '{"date": "2024-01-15", "hours": 8.5, "description": "Working on project"}'
@@ -212,32 +213,5 @@ GET /health
 ```
 Use this endpoint with uptime monitoring services (e.g., UptimeRobot, Pingdom, cloud provider health checks).
 
-## Production Monitoring
 
-**Recommended best practices:**
-- Use the `/health` endpoint for uptime monitoring.
-- Integrate [Sentry](https://sentry.io/) or a similar service for error monitoring in both backend and frontend.
-- Set up alerts for downtime and errors.
-- Use a production WSGI server (e.g., Gunicorn) for Flask deployments.
 
-**Sample Sentry integration for Flask:**
-```python
-import sentry_sdk
-from sentry_sdk.integrations.flask import FlaskIntegration
-
-sentry_sdk.init(
-    dsn="YOUR_SENTRY_DSN",
-    integrations=[FlaskIntegration()],
-    traces_sample_rate=1.0,
-    environment="production"
-)
-```
-
-**Sample Sentry integration for React:**
-```js
-import * as Sentry from "@sentry/react";
-Sentry.init({
-  dsn: "YOUR_SENTRY_DSN",
-  environment: "production",
-});
-```
