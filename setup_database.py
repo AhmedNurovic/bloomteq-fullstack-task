@@ -5,8 +5,10 @@ Run this script to initialize your production database
 """
 
 import os
+import sys
 
 from dotenv import load_dotenv
+from sqlalchemy import create_engine, text
 
 load_dotenv()  # Loads .env if present
 
@@ -68,7 +70,7 @@ def setup_database():
         cursor.close()
         conn.close()
 
-    except Exception as e:
+    except Exception:
         return False
 
     return True

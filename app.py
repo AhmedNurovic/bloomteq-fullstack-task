@@ -252,7 +252,7 @@ def _get_statistics(user_id):
         .filter(
             WorkEntry.user_id == user_id,
             WorkEntry.date == today,
-            WorkEntry.completed == True,
+            WorkEntry.completed.is_(True),
         )
         .scalar()
         or 0
@@ -265,7 +265,7 @@ def _get_statistics(user_id):
             WorkEntry.user_id == user_id,
             WorkEntry.date >= week_ago,
             WorkEntry.date <= today,
-            WorkEntry.completed == True,
+            WorkEntry.completed.is_(True),
         )
         .scalar()
         or 0
@@ -278,7 +278,7 @@ def _get_statistics(user_id):
             WorkEntry.user_id == user_id,
             WorkEntry.date >= week_ago,
             WorkEntry.date <= today,
-            WorkEntry.completed == True,
+            WorkEntry.completed.is_(True),
         )
         .scalar()
         or 0
