@@ -1,4 +1,4 @@
 [flake8]
 max-complexity = 30
-ignore = C901 
-max-line-length = 88 
+ignore = C901, W503
+max-line-length = 88
