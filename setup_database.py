@@ -5,10 +5,8 @@ Run this script to initialize your production database
 """
 
 import os
-import sys
 
 from dotenv import load_dotenv
-from sqlalchemy import create_engine, text
 
 load_dotenv()  # Loads .env if present
 
